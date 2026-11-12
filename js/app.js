@@ -123,12 +123,52 @@ function tarjetaSugerencia(item, tipo) {
        <p class="porcion">Porción sugerida: <strong>${item.porcion}</strong></p>`
     : `<p class="porcion">${item.porcion}</p>`;
 
+  let productos = "";
+  if (tipo === "hambre" && typeof productosDe === "function") {
+    const ps = productosDe(item.id);
+    if (ps.length) {
+      productos = `<div class="productos-super">
+        <p class="productos-titulo">🛒 Ejemplos en el súper</p>
+        ${ps.slice(0, 3).map(p => `
+          <div class="producto">
+            <strong>${p.marca} — ${p.nombre}</strong>
+            <span class="super-tag">${p.super}</span>
+            <small>${p.nota}</small>
+          </div>`).join("")}
+      </div>`;
+    }
+  }
+
   return `
     <div class="sugerencia-emoji">${item.emoji}</div>
     <h2>${item.nombre}</h2>
     ${extra}
     <p class="porque">💡 ${item.porque}</p>
+    ${productos}
   `;
+}
+
+/* ---------- Catálogo de productos del supermercado ---------- */
+function abrirProductos() {
+  const cont = $("#lista-productos");
+  // Agrupar por alimento de referencia
+  const grupos = {};
+  PRODUCTOS.forEach(p => {
+    const a = ALIMENTOS.find(x => x.id === p.refAlimento);
+    const key = a ? a.emoji + " " + a.nombre : "Otros";
+    (grupos[key] = grupos[key] || []).push(p);
+  });
+  cont.innerHTML = Object.keys(grupos).map(g => `
+    <div class="grupo-productos">
+      <h3 class="grupo-titulo">${g}</h3>
+      ${grupos[g].map(p => `
+        <div class="producto">
+          <strong>${p.marca} — ${p.nombre}</strong>
+          <span class="super-tag">${p.super}</span>
+          <small>${p.nota}</small>
+        </div>`).join("")}
+    </div>`).join("");
+  mostrarPantalla("pantalla-productos");
 }
 
 function sugerir(tipo, universo) {
@@ -257,6 +297,8 @@ function actualizarSaludo() {
 function initEventos() {
   $("#btn-hambre").addEventListener("click", iniciarHambre);
   $("#btn-sed").addEventListener("click", iniciarSed);
+  $("#btn-productos").addEventListener("click", abrirProductos);
+  $("#btn-productos-volver").addEventListener("click", () => mostrarPantalla("pantalla-inicio"));
 
   // Pantalla agua
   $("#agua-la-probare").addEventListener("click", () => {

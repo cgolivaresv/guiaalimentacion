@@ -402,6 +402,52 @@ const ETIQUETAS_GUSTOS = [
   { id: "sin_gluten", label: "Sin gluten", desc: "Evitar trigo, avena no certificada, pan" }
 ];
 
+/* ---------- PRODUCTOS reales de supermercados chilenos ----------
+   Ejemplos concretos que encajan con cada alimento, para que el
+   usuario sepa qué comprar. Datos tomados de las fichas de Jumbo y
+   Líder (nov 2026); precios y stock varían, no se incluyen.
+   refAlimento enlaza con un id de ALIMENTOS o BEBIDAS.            */
+const PRODUCTOS = [
+  // Yogur griego / proteico
+  { id: "p_colun_griego", nombre: "Yogur Griego Light", marca: "Colun", super: "Jumbo", refAlimento: "yogur_natural", nota: "7 g de proteína, 0% grasa, sin azúcar añadida y sin lactosa." },
+  { id: "p_oikos", nombre: "Griego Oikos Natural Sin Endulzar 150 g", marca: "Danone", super: "Jumbo", refAlimento: "yogur_natural", nota: "Rico en proteínas y sin azúcares añadidos." },
+  { id: "p_soprole_protein", nombre: "Protein+ 155 g", marca: "Soprole", super: "Jumbo", refAlimento: "yogur_natural", nota: "10 g de proteína por porción, sin azúcar añadida, sin lactosa." },
+  { id: "p_quillayes_protein", nombre: "Griego Proteína Natural 140 g", marca: "Quillayes", super: "Jumbo", refAlimento: "yogur_natural", nota: "13 g de proteína y sin endulzar." },
+  { id: "p_surlat_whey", nombre: "Whey Protein Natural 140 g", marca: "Surlat", super: "Jumbo", refAlimento: "yogur_natural", nota: "Sin lactosa y sin azúcar añadida." },
+  { id: "p_quillayes_triple0", nombre: "Griego Triple 0% Natural 400 g", marca: "Quillayes", super: "Jumbo", refAlimento: "yogur_natural", nota: "Sin materia grasa ni azúcar." },
+
+  // Atún en agua
+  { id: "p_atun_lider", nombre: "Lomitos de Atún en Agua", marca: "Lider", super: "Líder", refAlimento: "pescado", nota: "Proteína magra; ~98 kcal por lata drenada (91 g)." },
+  { id: "p_atun_rc", nombre: "Atún Lomitos en Agua", marca: "Robinson Crusoe", super: "Jumbo", refAlimento: "pescado", nota: "Rico en proteínas y bajo en grasas; ideal para ensaladas." },
+  { id: "p_atun_vc", nombre: "Atún Lomitos en Agua", marca: "Van Camp's", super: "Jumbo", refAlimento: "pescado", nota: "Opción al agua (no en aceite): menos calorías que la versión en aceite." },
+
+  // Avena
+  { id: "p_avena_quaker", nombre: "Avena Integral Tradicional", marca: "Quaker", super: "Jumbo / Líder", refAlimento: "avena", nota: "Nutri-Score A; aporta el beta-glucano que da saciedad." },
+  { id: "p_avena_multi", nombre: "Avena Multisemillas (chía, linaza, sésamo)", marca: "Quaker", super: "Jumbo", refAlimento: "avena", nota: "Avena + semillas: más fibra. Elige la versión sin pasas si cuidas el azúcar." },
+  { id: "p_avena_lider", nombre: "Avena Tradicional", marca: "Lider", super: "Líder", refAlimento: "avena", nota: "Avena tradicional económica, misma base de fibra." },
+
+  // Legumbres
+  { id: "p_lentejas_iansa", nombre: "Lentejas 6 mm (secas) 1 kg", marca: "Iansa Agro", super: "Líder", refAlimento: "lentejas", nota: "Secas: máximo control de textura y sin sodio añadido." },
+  { id: "p_garbanzos_lider", nombre: "Garbanzos Pelados sin Piel 1 kg", marca: "Lider", super: "Líder", refAlimento: "porotos", nota: "Secos, sin piel; cocción más rápida." },
+  { id: "p_lentejas_drenadas", nombre: "Lentejas drenadas 230 g (listas)", marca: "Lider", super: "Líder", refAlimento: "lentejas", nota: "Ya cocidas para comida rápida; revisa el sodio y enjuágalas." },
+
+  // Frutos secos (porción controlada)
+  { id: "p_mani_tribu", nombre: "Maní Tostado Sin Sal 700 g", marca: "Tribu", super: "Jumbo", refAlimento: "frutos_secos", nota: "Sin sal; cuida la porción (un puñado), son densos en calorías." },
+  { id: "p_puronuts", nombre: "Mix Puro Nuts (maní, almendra, cajú)", marca: "Cuisine & Co", super: "Jumbo", refAlimento: "frutos_secos", nota: "Sin sal y sin azúcar añadida; sin pasas, mejor para bajar de peso." },
+  { id: "p_millantu", nombre: "Surtido Sin Sal 200 g", marca: "Millantú", super: "Jumbo", refAlimento: "frutos_secos", nota: "Surtido sin sal para colación; respeta el puñado." },
+
+  // Quesos frescos / quesillo
+  { id: "p_quesillo_colun", nombre: "Quesillo Pote 320 g", marca: "Colun", super: "Jumbo", refAlimento: "queso_fresco", nota: "Alto en proteínas y liviano; ideal para colación o ensalada." },
+  { id: "p_qfresco_colun", nombre: "Queso Fresco 450 g", marca: "Colun", super: "Jumbo", refAlimento: "queso_fresco", nota: "Fresco, suave; buena proteína con menos grasa que un chanco." },
+  { id: "p_quesillo_soprole", nombre: "Quesillo Sin Lactosa 300 g", marca: "Soprole", super: "Jumbo", refAlimento: "queso_fresco", nota: "Sin lactosa; proteína liviana para once o cena." },
+  { id: "p_ricotta_light", nombre: "Queso Ricotta Light 200 g", marca: "Quillayes", super: "Jumbo", refAlimento: "queso_fresco", nota: "Ricotta baja en grasa; cremosa con pocas calorías." }
+];
+
+/* Devuelve los productos reales que corresponden a un alimento */
+function productosDe(idAlimento) {
+  return PRODUCTOS.filter(p => p.refAlimento === idAlimento);
+}
+
 if (typeof module !== "undefined") {
-  module.exports = { ALIMENTOS, BEBIDAS, DESPENSA_OPCIONES, ETIQUETAS_GUSTOS, MOMENTOS };
+  module.exports = { ALIMENTOS, BEBIDAS, DESPENSA_OPCIONES, ETIQUETAS_GUSTOS, MOMENTOS, PRODUCTOS, productosDe };
 }
