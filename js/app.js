@@ -149,24 +149,47 @@ function tarjetaSugerencia(item, tipo) {
 }
 
 /* ---------- Catálogo de productos del supermercado ---------- */
+const PERFIL_INFO = {
+  recomendado: { txt: "Recomendado", cls: "perfil-reco" },
+  moderar: { txt: "Con moderación", cls: "perfil-mod" },
+  ocasional: { txt: "Ocasional", cls: "perfil-ocas" }
+};
+const PERFIL_ORDEN = { recomendado: 0, moderar: 1, ocasional: 2 };
+
+function tarjetaProducto(p) {
+  const perfil = (typeof perfilDe === "function") ? perfilDe(p) : (p.perfil || "recomendado");
+  const info = PERFIL_INFO[perfil] || PERFIL_INFO.recomendado;
+  return `
+    <div class="producto">
+      <strong>${p.marca} — ${p.nombre}</strong>
+      <div class="producto-tags">
+        <span class="perfil-tag ${info.cls}">${info.txt}</span>
+        <span class="super-tag">${p.super}</span>
+      </div>
+      <small>${p.nota}</small>
+    </div>`;
+}
+
 function abrirProductos() {
   const cont = $("#lista-productos");
-  // Agrupar por alimento de referencia
+  // Agrupar por alimento de referencia o por grupo manual
   const grupos = {};
   PRODUCTOS.forEach(p => {
-    const a = ALIMENTOS.find(x => x.id === p.refAlimento);
-    const key = a ? a.emoji + " " + a.nombre : "Otros";
+    const a = ALIMENTOS.find(x => x.id === p.refAlimento) || BEBIDAS.find(x => x.id === p.refAlimento);
+    const key = a ? (a.emoji + " " + a.nombre) : (p.grupo || "🛒 Otros");
     (grupos[key] = grupos[key] || []).push(p);
   });
-  cont.innerHTML = Object.keys(grupos).map(g => `
+  // Ordenar productos dentro de cada grupo por perfil
+  const perfilP = p => PERFIL_ORDEN[(typeof perfilDe === "function") ? perfilDe(p) : (p.perfil || "recomendado")];
+  // Ordenar grupos: los caprichos al final
+  const claves = Object.keys(grupos).sort((a, b) => {
+    const ca = a.includes("Caprichos") ? 1 : 0, cb = b.includes("Caprichos") ? 1 : 0;
+    return ca - cb || a.localeCompare(b);
+  });
+  cont.innerHTML = claves.map(g => `
     <div class="grupo-productos">
       <h3 class="grupo-titulo">${g}</h3>
-      ${grupos[g].map(p => `
-        <div class="producto">
-          <strong>${p.marca} — ${p.nombre}</strong>
-          <span class="super-tag">${p.super}</span>
-          <small>${p.nota}</small>
-        </div>`).join("")}
+      ${grupos[g].sort((a, b) => perfilP(a) - perfilP(b)).map(tarjetaProducto).join("")}
     </div>`).join("");
   mostrarPantalla("pantalla-productos");
 }

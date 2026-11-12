@@ -303,6 +303,45 @@ const ALIMENTOS = [
     etiquetas: ["mediterranea", "sin_gluten", "proteina_alta", "fibra_alta"],
     porcion: "1 plato",
     porque: "Combina lo mejor: volumen de verduras + proteína magra. Muy saciante por caloría."
+  },
+  {
+    id: "carne_molida",
+    nombre: "Carne molida magra",
+    emoji: "🥩",
+    categorias: ["proteina", "carne_roja"],
+    saciedad: 4,
+    densidad: "media",
+    proteina: "alta", fibra: "baja", agua: "media",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["sin_gluten", "proteina_alta"],
+    porcion: "120-150 g",
+    porque: "Proteína saciante. Elige la más magra (4-7% de grasa) para menos calorías."
+  },
+  {
+    id: "arroz",
+    nombre: "Arroz (mejor integral)",
+    emoji: "🍚",
+    categorias: ["carbohidrato", "cereal"],
+    saciedad: 3,
+    densidad: "media",
+    proteina: "baja", fibra: "baja", agua: "media",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["vegetariano", "sin_gluten"],
+    porcion: "3/4 a 1 taza cocida",
+    porque: "Energía práctica, pero sacia menos que legumbres o papa. El integral tiene más fibra; mide la porción y acompáñalo de proteína y verduras."
+  },
+  {
+    id: "fideos",
+    nombre: "Fideos / pasta (mejor integral)",
+    emoji: "🍝",
+    categorias: ["carbohidrato", "cereal"],
+    saciedad: 3,
+    densidad: "media",
+    proteina: "media", fibra: "baja", agua: "media",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["vegetariano"],
+    porcion: "80 g en seco",
+    porque: "Carbohidrato rápido y rendidor. Prefiere integral o 'proslow' (menor índice glicémico), mide la porción y súmale verduras y proteína para que sacie más."
   }
 ];
 
@@ -391,7 +430,10 @@ const DESPENSA_OPCIONES = [
   { id: "frutos_secos", label: "Frutos secos", emoji: "🥜", match: ["frutos_secos"] },
   { id: "palta", label: "Palta", emoji: "🥑", match: ["palta", "pan_integral"] },
   { id: "pan_integral", label: "Pan integral", emoji: "🍞", match: ["pan_integral"] },
-  { id: "quinoa", label: "Quinoa / choclo", emoji: "🌽", match: ["choclo_quinoa"] }
+  { id: "quinoa", label: "Quinoa / choclo", emoji: "🌽", match: ["choclo_quinoa"] },
+  { id: "arroz", label: "Arroz", emoji: "🍚", match: ["arroz"] },
+  { id: "fideos", label: "Fideos / pasta", emoji: "🍝", match: ["fideos"] },
+  { id: "carne", label: "Carne molida", emoji: "🥩", match: ["carne_molida"] }
 ];
 
 /* Preferencias configurables (gustos) */
@@ -440,14 +482,52 @@ const PRODUCTOS = [
   { id: "p_quesillo_colun", nombre: "Quesillo Pote 320 g", marca: "Colun", super: "Jumbo", refAlimento: "queso_fresco", nota: "Alto en proteínas y liviano; ideal para colación o ensalada." },
   { id: "p_qfresco_colun", nombre: "Queso Fresco 450 g", marca: "Colun", super: "Jumbo", refAlimento: "queso_fresco", nota: "Fresco, suave; buena proteína con menos grasa que un chanco." },
   { id: "p_quesillo_soprole", nombre: "Quesillo Sin Lactosa 300 g", marca: "Soprole", super: "Jumbo", refAlimento: "queso_fresco", nota: "Sin lactosa; proteína liviana para once o cena." },
-  { id: "p_ricotta_light", nombre: "Queso Ricotta Light 200 g", marca: "Quillayes", super: "Jumbo", refAlimento: "queso_fresco", nota: "Ricotta baja en grasa; cremosa con pocas calorías." }
+  { id: "p_ricotta_light", nombre: "Queso Ricotta Light 200 g", marca: "Quillayes", super: "Jumbo", refAlimento: "queso_fresco", nota: "Ricotta baja en grasa; cremosa con pocas calorías." },
+
+  // ---- Carnes y proteínas (recomendado) ----
+  { id: "p_molida4", nombre: "Carne Molida Vacuno 4% Grasa 500 g", marca: "Cuisine & Co", super: "Jumbo", refAlimento: "carne_molida", perfil: "recomendado", nota: "La más magra (4% grasa): máxima proteína con menos calorías." },
+  { id: "p_molida7", nombre: "Carne Molida Vacuno 7% Grasa 500 g", marca: "Cuisine & Co", super: "Jumbo", refAlimento: "carne_molida", perfil: "recomendado", nota: "Magra (7% grasa); buena para salsas y guisos livianos." },
+  { id: "p_pechuga", nombre: "Pechuga de Pollo Deshuesada 800 g", marca: "Cuisine & Co", super: "Jumbo", refAlimento: "pollo", perfil: "recomendado", nota: "Sin marinar: proteína magra, tú controlas sal y aceite." },
+  { id: "p_jurel", nombre: "Jurel Natural Bajo en Sodio 300 g", marca: "Cuisine & Co", super: "Jumbo", refAlimento: "pescado", perfil: "recomendado", nota: "Pescado al natural y bajo en sodio; omega-3 y proteína." },
+  { id: "p_huevos", nombre: "Huevos Grandes 12 un.", marca: "Cuisine & Co", super: "Jumbo", refAlimento: "huevo_cocido", perfil: "recomendado", nota: "Proteína de alto valor; de los alimentos más saciantes." },
+
+  // ---- Lácteos / bebibles (recomendado) ----
+  { id: "p_leche_desc", nombre: "Leche Descremada 1 L", marca: "Colun", super: "Jumbo", refAlimento: "leche_descremada", perfil: "recomendado", nota: "Hidrata y aporta proteína con poca grasa." },
+  { id: "p_loncoproteina", nombre: "Leche Extra Proteína 1 L", marca: "Loncoleche", super: "Jumbo", refAlimento: "leche_descremada", perfil: "recomendado", nota: "Más proteína por vaso: suma saciedad." },
+
+  // ---- Carbohidratos / despensa (con moderación) ----
+  { id: "p_arroz_tucapel", nombre: "Arroz Grano Largo Grado 2 1 kg", marca: "Tucapel", super: "Jumbo", refAlimento: "arroz", perfil: "moderar", nota: "Básico rendidor; mide la porción (~1 taza cocida) y suma verduras." },
+  { id: "p_spag_integral", nombre: "Spaghetti Integral 400 g", marca: "Carozzi", super: "Jumbo", refAlimento: "fideos", perfil: "moderar", nota: "Integral: más fibra que la pasta blanca, sacia algo más." },
+  { id: "p_proslow", nombre: "Espirales Proslow 400 g", marca: "Lucchetti", super: "Jumbo", refAlimento: "fideos", perfil: "moderar", nota: "Línea 'Proslow' de menor índice glicémico: energía más estable." },
+  { id: "p_spag5", nombre: "Spaghetti N°5 400 g", marca: "Carozzi", super: "Jumbo / Líder", refAlimento: "fideos", perfil: "moderar", nota: "Pasta blanca clásica; porción medida y acompáñala con proteína." },
+  { id: "p_hallulla", nombre: "Pan Hallulla Precocida 8 un.", marca: "Cuisine & Co", super: "Jumbo", grupo: "🥖 Pan", perfil: "moderar", nota: "Sacia menos que el integral; mejor con huevo, palta o quesillo encima." },
+  { id: "p_harina_int", nombre: "Harina Integral 1 kg", marca: "Selecta", super: "Jumbo", grupo: "🌾 Despensa", perfil: "moderar", nota: "Para hornear con más fibra que la harina blanca." },
+
+  // ---- Para untar / grasas ----
+  { id: "p_oliva", nombre: "Aceite de Oliva Extra Virgen 500 ml", marca: "Chef", super: "Jumbo", grupo: "🫒 Aceites y grasas", perfil: "recomendado", nota: "Grasa saludable del estilo mediterráneo; mídelo (es calórico): 1 cdta por plato." },
+  { id: "p_quesocrema_light", nombre: "Queso Crema '67 Calorías' 227 g", marca: "Cuisine & Co", super: "Jumbo", grupo: "🧈 Para untar", perfil: "moderar", nota: "Versión reducida en calorías para untar; mejor que el queso crema normal." },
+  { id: "p_mantequilla", nombre: "Mantequilla con Sal 250 g", marca: "Colun", super: "Jumbo", grupo: "🧈 Para untar", perfil: "moderar", nota: "Rica pero densa en grasa; úsala en poca cantidad." },
+
+  // ---- Bebidas ----
+  { id: "p_cola_zero", nombre: "Bebida Cola Zero / Sin Azúcar", marca: "Coca-Cola", super: "Jumbo / Líder", grupo: "🥤 Bebidas sin azúcar", perfil: "moderar", nota: "Sin azúcar ni calorías; mejor que la azucarada, pero el agua sigue siendo la base." },
+
+  // ---- Caprichos (ocasional) ----
+  { id: "p_cola", nombre: "Bebida Cola Original (con azúcar)", marca: "Coca-Cola", super: "Jumbo / Líder", grupo: "🍟 Caprichos (ocasional)", perfil: "ocasional", nota: "Azúcar líquida: muchas calorías que no sacian. Déjala para ocasiones." },
+  { id: "p_lays", nombre: "Papas Fritas", marca: "Lay's", super: "Jumbo", grupo: "🍟 Caprichos (ocasional)", perfil: "ocasional", nota: "Alta densidad calórica y muy fáciles de sobreconsumir; porción pequeña y ocasional." },
+  { id: "p_doritos", nombre: "Snack Doritos", marca: "Evercrisp", super: "Jumbo", grupo: "🍟 Caprichos (ocasional)", perfil: "ocasional", nota: "Snack ultraprocesado: poco saciante por caloría." },
+  { id: "p_nuggets", nombre: "Nuggets de Pollo 400 g", marca: "La Crianza", super: "Jumbo", grupo: "🍟 Caprichos (ocasional)", perfil: "ocasional", nota: "Apanado y frito: más calorías que el pollo a la plancha." },
+  { id: "p_manjar", nombre: "Manjar 400 g", marca: "Colun", super: "Jumbo", grupo: "🍟 Caprichos (ocasional)", perfil: "ocasional", nota: "Muy dulce y calórico; una cucharadita de vez en cuando." },
+  { id: "p_helado", nombre: "Postre / Helado", marca: "Soprole / Mega", super: "Jumbo", grupo: "🍟 Caprichos (ocasional)", perfil: "ocasional", nota: "Gusto ocasional; busca porciones individuales para controlar la cantidad." }
 ];
 
-/* Devuelve los productos reales que corresponden a un alimento */
+/* Perfil por defecto: los productos antiguos son 'recomendado' */
+function perfilDe(p) { return p.perfil || "recomendado"; }
+
+/* Productos recomendados que corresponden a un alimento (para la sugerencia) */
 function productosDe(idAlimento) {
-  return PRODUCTOS.filter(p => p.refAlimento === idAlimento);
+  return PRODUCTOS.filter(p => p.refAlimento === idAlimento && perfilDe(p) === "recomendado");
 }
 
 if (typeof module !== "undefined") {
-  module.exports = { ALIMENTOS, BEBIDAS, DESPENSA_OPCIONES, ETIQUETAS_GUSTOS, MOMENTOS, PRODUCTOS, productosDe };
+  module.exports = { ALIMENTOS, BEBIDAS, DESPENSA_OPCIONES, ETIQUETAS_GUSTOS, MOMENTOS, PRODUCTOS, productosDe, perfilDe };
 }

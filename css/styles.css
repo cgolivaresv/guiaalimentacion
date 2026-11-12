@@ -203,3 +203,10 @@ h3.sub-titulo { font-size: .95rem; color: var(--gris); margin: 20px 0 8px; text-
   font-size: .72rem;
   font-weight: 600;
 }
+
+/* Perfil de productos */
+.producto-tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 2px 0; }
+.perfil-tag { border-radius: 999px; padding: 2px 10px; font-size: .72rem; font-weight: 700; align-self: flex-start; }
+.perfil-reco { background: #e6f4ec; color: #1f5a41; }
+.perfil-mod  { background: #fff4e0; color: #9a6400; }
+.perfil-ocas { background: #fde7e7; color: #b23030; }
