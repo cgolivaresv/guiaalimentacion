@@ -191,10 +191,12 @@ function abrirDespensa() {
 
 function sugerirDesdeDespensa() {
   const sel = $$("#despensa-opciones .pill-despensa.sel").map(b => b.dataset.id);
+  const aviso = $("#despensa-aviso");
   if (sel.length === 0) {
-    alert("Marca al menos un alimento que tengas.");
+    if (aviso) aviso.textContent = "Marca al menos un alimento que tengas.";
     return;
   }
+  if (aviso) aviso.textContent = "";
   // ids de alimentos posibles según lo marcado
   const idsPosibles = new Set();
   sel.forEach(dId => {
