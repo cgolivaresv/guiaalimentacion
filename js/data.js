@@ -1,0 +1,407 @@
+/* ============================================================
+   data.js — Base de datos de alimentos y bebidas
+   ------------------------------------------------------------
+   Cada ítem está puntuado según evidencia sobre saciedad y
+   control de peso (ver README.md). Escala de saciedad 1-5:
+     5 = muy saciante por caloría (alta proteína + fibra + agua,
+         baja densidad energética)
+     1 = poco saciante / fácil de sobreconsumir
+   densidad: densidad energética (kcal por gramo)
+     "baja"  -> mucha agua/fibra, pocas calorías por bocado
+     "media"
+     "alta"  -> muchas calorías en poco volumen
+   momentos: cuándo encaja mejor en el día
+   etiquetas: para filtrar por gustos / dieta
+   ============================================================ */
+
+const MOMENTOS = ["desayuno", "media_manana", "almuerzo", "once", "cena", "noche"];
+
+/* ---------- ALIMENTOS (para el HAMBRE) ---------- */
+const ALIMENTOS = [
+  {
+    id: "huevo_cocido",
+    nombre: "Huevos cocidos",
+    emoji: "🥚",
+    categorias: ["proteina", "huevo"],
+    saciedad: 5,
+    densidad: "baja",
+    proteina: "alta", fibra: "baja", agua: "media",
+    momentos: ["desayuno", "media_manana", "almuerzo", "once", "cena"],
+    etiquetas: ["mediterranea", "vegetariano", "sin_gluten", "proteina_alta", "economico"],
+    porcion: "1-2 huevos",
+    porque: "Desayunar huevo produce más saciedad y reduce la ingesta de calorías de la mañana frente a un pan de igual peso."
+  },
+  {
+    id: "yogur_natural",
+    nombre: "Yogur natural / griego sin azúcar",
+    emoji: "🥛",
+    categorias: ["proteina", "lacteo"],
+    saciedad: 5,
+    densidad: "baja",
+    proteina: "alta", fibra: "baja", agua: "alta",
+    momentos: ["desayuno", "media_manana", "once", "noche"],
+    etiquetas: ["mediterranea", "vegetariano", "sin_gluten", "proteina_alta"],
+    porcion: "1 pote (150-170 g)",
+    porque: "Alta proteína y mucha agua: sacia con pocas calorías. Mejor sin azúcar añadida."
+  },
+  {
+    id: "queso_fresco",
+    nombre: "Queso fresco / cottage",
+    emoji: "🧀",
+    categorias: ["proteina", "lacteo"],
+    saciedad: 4,
+    densidad: "media",
+    proteina: "alta", fibra: "baja", agua: "media",
+    momentos: ["desayuno", "media_manana", "once", "cena"],
+    etiquetas: ["vegetariano", "sin_gluten", "proteina_alta"],
+    porcion: "80-100 g",
+    porque: "Proteína láctea saciante; el cottage suma volumen con pocas calorías."
+  },
+  {
+    id: "lentejas",
+    nombre: "Lentejas",
+    emoji: "🫘",
+    categorias: ["proteina", "legumbre"],
+    saciedad: 5,
+    densidad: "baja",
+    proteina: "alta", fibra: "alta", agua: "alta",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["mediterranea", "vegetariano", "sin_gluten", "proteina_alta", "fibra_alta", "economico"],
+    porcion: "1 plato (1 taza cocida)",
+    porque: "Proteína + fibra + agua. La fibra actúa en el intestino bajo y reduce el apetito horas después."
+  },
+  {
+    id: "porotos",
+    nombre: "Porotos / garbanzos",
+    emoji: "🫘",
+    categorias: ["proteina", "legumbre"],
+    saciedad: 5,
+    densidad: "baja",
+    proteina: "alta", fibra: "alta", agua: "alta",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["mediterranea", "vegetariano", "sin_gluten", "proteina_alta", "fibra_alta", "economico"],
+    porcion: "1 plato (1 taza cocida)",
+    porque: "Legumbre muy saciante por su combinación de fibra y proteína vegetal."
+  },
+  {
+    id: "avena",
+    nombre: "Avena",
+    emoji: "🥣",
+    categorias: ["cereal_integral"],
+    saciedad: 5,
+    densidad: "media",
+    proteina: "media", fibra: "alta", agua: "alta",
+    momentos: ["desayuno", "media_manana", "once"],
+    etiquetas: ["mediterranea", "vegetariano", "fibra_alta"],
+    porcion: "40-50 g en agua o leche",
+    porque: "El beta-glucano de la avena aumenta hormonas de saciedad horas después de comer."
+  },
+  {
+    id: "papa_cocida",
+    nombre: "Papa cocida (con cáscara)",
+    emoji: "🥔",
+    categorias: ["tuberculo"],
+    saciedad: 5,
+    densidad: "baja",
+    proteina: "baja", fibra: "media", agua: "alta",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["vegetariano", "sin_gluten", "economico"],
+    porcion: "1 unidad mediana",
+    porque: "La papa hervida fue el alimento MÁS saciante del índice de saciedad de la U. de Sídney. Hervida, no frita."
+  },
+  {
+    id: "pescado",
+    nombre: "Pescado (merluza, jurel, atún al agua)",
+    emoji: "🐟",
+    categorias: ["proteina", "pescado"],
+    saciedad: 5,
+    densidad: "baja",
+    proteina: "alta", fibra: "baja", agua: "media",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["mediterranea", "sin_gluten", "proteina_alta"],
+    porcion: "1 filete (120-150 g)",
+    porque: "Proteína magra muy saciante; pilar de la dieta mediterránea."
+  },
+  {
+    id: "pollo",
+    nombre: "Pollo o pavo a la plancha",
+    emoji: "🍗",
+    categorias: ["proteina", "carne_blanca"],
+    saciedad: 5,
+    densidad: "media",
+    proteina: "alta", fibra: "baja", agua: "media",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["sin_gluten", "proteina_alta"],
+    porcion: "1 presa (120-150 g)",
+    porque: "Dietas con ~25-30% de calorías en proteína facilitan comer menos sin pasar hambre."
+  },
+  {
+    id: "ensalada",
+    nombre: "Ensalada de verduras",
+    emoji: "🥗",
+    categorias: ["verdura"],
+    saciedad: 4,
+    densidad: "baja",
+    proteina: "baja", fibra: "alta", agua: "alta",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["mediterranea", "vegetariano", "sin_gluten", "fibra_alta"],
+    porcion: "1 plato grande",
+    porque: "Mucho volumen con pocas calorías: llena el estómago antes de llegar a muchas calorías."
+  },
+  {
+    id: "verduras_salteadas",
+    nombre: "Verduras cocidas / salteadas",
+    emoji: "🥦",
+    categorias: ["verdura"],
+    saciedad: 4,
+    densidad: "baja",
+    proteina: "baja", fibra: "alta", agua: "alta",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["mediterranea", "vegetariano", "sin_gluten", "fibra_alta"],
+    porcion: "1 plato",
+    porque: "Baja densidad energética: comes menos calorías comiendo el mismo volumen."
+  },
+  {
+    id: "manzana",
+    nombre: "Manzana",
+    emoji: "🍎",
+    categorias: ["fruta"],
+    saciedad: 4,
+    densidad: "baja",
+    proteina: "baja", fibra: "media", agua: "alta",
+    momentos: ["media_manana", "once", "noche"],
+    etiquetas: ["mediterranea", "vegetariano", "sin_gluten", "fibra_alta"],
+    porcion: "1 unidad",
+    porque: "Agua + fibra la hacen de las frutas más saciantes para picar entre horas. Entera, no en jugo."
+  },
+  {
+    id: "naranja",
+    nombre: "Naranja / mandarina",
+    emoji: "🍊",
+    categorias: ["fruta"],
+    saciedad: 4,
+    densidad: "baja",
+    proteina: "baja", fibra: "media", agua: "alta",
+    momentos: ["media_manana", "once", "noche"],
+    etiquetas: ["mediterranea", "vegetariano", "sin_gluten"],
+    porcion: "1 unidad",
+    porque: "Mucha agua y fibra; sacia e hidrata a la vez. Entera, no en jugo."
+  },
+  {
+    id: "platano",
+    nombre: "Plátano",
+    emoji: "🍌",
+    categorias: ["fruta"],
+    saciedad: 3,
+    densidad: "media",
+    proteina: "baja", fibra: "media", agua: "media",
+    momentos: ["desayuno", "media_manana"],
+    etiquetas: ["vegetariano", "sin_gluten"],
+    porcion: "1 unidad",
+    porque: "Saciante y práctico; algo más calórico que otras frutas, mejor de día que de noche."
+  },
+  {
+    id: "frutos_secos",
+    nombre: "Frutos secos (nueces, almendras)",
+    emoji: "🥜",
+    categorias: ["grasa_saludable"],
+    saciedad: 3,
+    densidad: "alta",
+    proteina: "media", fibra: "media", agua: "baja",
+    momentos: ["media_manana", "once"],
+    etiquetas: ["mediterranea", "vegetariano", "sin_gluten", "proteina_alta"],
+    porcion: "1 puñado pequeño (20-30 g)",
+    porque: "Grasa saludable + fibra saciantes, pero densos en calorías: clave respetar el puñado."
+  },
+  {
+    id: "palta",
+    nombre: "Palta",
+    emoji: "🥑",
+    categorias: ["grasa_saludable"],
+    saciedad: 3,
+    densidad: "alta",
+    proteina: "baja", fibra: "alta", agua: "media",
+    momentos: ["desayuno", "almuerzo", "once"],
+    etiquetas: ["mediterranea", "vegetariano", "sin_gluten", "fibra_alta"],
+    porcion: "1/2 unidad",
+    porque: "Grasa + fibra dan saciedad prolongada; mejor que el aceite por su fibra. Cuidar la cantidad."
+  },
+  {
+    id: "sopa_verduras",
+    nombre: "Sopa / crema de verduras",
+    emoji: "🍲",
+    categorias: ["verdura", "sopa"],
+    saciedad: 5,
+    densidad: "baja",
+    proteina: "baja", fibra: "alta", agua: "alta",
+    momentos: ["almuerzo", "cena", "noche"],
+    etiquetas: ["mediterranea", "vegetariano", "sin_gluten", "fibra_alta"],
+    porcion: "1 plato hondo",
+    porque: "Satisface hambre y sed a la vez: mucha agua + fibra, muy pocas calorías. Ideal de noche."
+  },
+  {
+    id: "pan_integral",
+    nombre: "Pan integral + proteína (huevo/queso/palta)",
+    emoji: "🍞",
+    categorias: ["cereal_integral"],
+    saciedad: 3,
+    densidad: "media",
+    proteina: "media", fibra: "media", agua: "baja",
+    momentos: ["desayuno", "once"],
+    etiquetas: ["mediterranea", "vegetariano", "fibra_alta"],
+    porcion: "1-2 rebanadas",
+    porque: "El integral sacia más que el blanco; acompáñalo de proteína para que dure. Solo, llena poco."
+  },
+  {
+    id: "choclo_quinoa",
+    nombre: "Quinoa / choclo",
+    emoji: "🌽",
+    categorias: ["cereal_integral"],
+    saciedad: 4,
+    densidad: "media",
+    proteina: "media", fibra: "alta", agua: "media",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["vegetariano", "sin_gluten", "fibra_alta"],
+    porcion: "3/4 taza cocida",
+    porque: "Grano con fibra y algo de proteína; más saciante que el arroz blanco."
+  },
+  {
+    id: "tomate_pepino",
+    nombre: "Tomate / pepino / apio",
+    emoji: "🍅",
+    categorias: ["verdura"],
+    saciedad: 3,
+    densidad: "baja",
+    proteina: "baja", fibra: "media", agua: "alta",
+    momentos: ["media_manana", "once", "noche"],
+    etiquetas: ["mediterranea", "vegetariano", "sin_gluten"],
+    porcion: "a voluntad",
+    porque: "Casi pura agua y fibra: para picar sin apenas calorías cuando el hambre es por ansiedad."
+  },
+  {
+    id: "edamame",
+    nombre: "Edamame / arvejas",
+    emoji: "🫛",
+    categorias: ["proteina", "legumbre"],
+    saciedad: 4,
+    densidad: "baja",
+    proteina: "alta", fibra: "alta", agua: "media",
+    momentos: ["media_manana", "once", "cena"],
+    etiquetas: ["vegetariano", "sin_gluten", "proteina_alta", "fibra_alta"],
+    porcion: "1 taza",
+    porque: "Snack con proteína + fibra, saciante y bajo en calorías."
+  },
+  {
+    id: "atun_ensalada",
+    nombre: "Ensalada con atún o pollo",
+    emoji: "🥗",
+    categorias: ["proteina", "verdura"],
+    saciedad: 5,
+    densidad: "baja",
+    proteina: "alta", fibra: "alta", agua: "alta",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["mediterranea", "sin_gluten", "proteina_alta", "fibra_alta"],
+    porcion: "1 plato",
+    porque: "Combina lo mejor: volumen de verduras + proteína magra. Muy saciante por caloría."
+  }
+];
+
+/* ---------- BEBIDAS (para la SED) ---------- */
+const BEBIDAS = [
+  {
+    id: "agua",
+    nombre: "Agua",
+    emoji: "💧",
+    categorias: ["agua"],
+    saciedad: 0,
+    densidad: "baja",
+    etiquetas: ["sin_azucar"],
+    porcion: "1 vaso (250 ml)",
+    porque: "La mejor opción, cero calorías. Prueba siempre esto primero."
+  },
+  {
+    id: "agua_fruta",
+    nombre: "Agua con rodajas de fruta o menta",
+    emoji: "🍋",
+    categorias: ["agua"],
+    saciedad: 0,
+    densidad: "baja",
+    etiquetas: ["sin_azucar"],
+    porcion: "1 vaso",
+    porque: "Sabor sin azúcar: ayuda a beber más agua durante el día."
+  },
+  {
+    id: "infusion",
+    nombre: "Té o infusión de hierbas sin azúcar",
+    emoji: "🍵",
+    categorias: ["infusion"],
+    saciedad: 0,
+    densidad: "baja",
+    etiquetas: ["sin_azucar"],
+    porcion: "1 taza",
+    porque: "Hidrata y da saciedad por volumen, sin calorías. Evita azucararla."
+  },
+  {
+    id: "agua_gas",
+    nombre: "Agua con gas (mineral, sin azúcar)",
+    emoji: "🫧",
+    categorias: ["agua"],
+    saciedad: 0,
+    densidad: "baja",
+    etiquetas: ["sin_azucar"],
+    porcion: "1 vaso",
+    porque: "Hidrata igual que el agua. Ojo: el gas puede abrir algo el apetito en algunas personas."
+  },
+  {
+    id: "caldo",
+    nombre: "Caldo de verduras desgrasado",
+    emoji: "🍜",
+    categorias: ["caldo"],
+    saciedad: 2,
+    densidad: "baja",
+    etiquetas: ["sin_azucar"],
+    porcion: "1 taza",
+    porque: "Hidrata y calma algo de hambre con muy pocas calorías. Útil antes de la cena."
+  },
+  {
+    id: "leche_descremada",
+    nombre: "Leche descremada o bebida vegetal sin azúcar",
+    emoji: "🥛",
+    categorias: ["lacteo"],
+    saciedad: 1,
+    densidad: "media",
+    etiquetas: ["sin_azucar"],
+    porcion: "1 vaso",
+    porque: "Hidrata y aporta algo de proteína; elige la versión sin azúcar añadida."
+  }
+];
+
+/* Opciones de despensa para '¿qué tienes?' */
+const DESPENSA_OPCIONES = [
+  { id: "huevos", label: "Huevos", emoji: "🥚", match: ["huevo_cocido", "pan_integral"] },
+  { id: "yogur", label: "Yogur", emoji: "🥛", match: ["yogur_natural"] },
+  { id: "queso", label: "Queso fresco", emoji: "🧀", match: ["queso_fresco", "pan_integral"] },
+  { id: "legumbres", label: "Legumbres", emoji: "🫘", match: ["lentejas", "porotos"] },
+  { id: "avena", label: "Avena", emoji: "🥣", match: ["avena"] },
+  { id: "papas", label: "Papas", emoji: "🥔", match: ["papa_cocida"] },
+  { id: "pescado", label: "Pescado / atún", emoji: "🐟", match: ["pescado", "atun_ensalada"] },
+  { id: "pollo", label: "Pollo / pavo", emoji: "🍗", match: ["pollo", "atun_ensalada"] },
+  { id: "verduras", label: "Verduras", emoji: "🥦", match: ["ensalada", "verduras_salteadas", "sopa_verduras", "tomate_pepino"] },
+  { id: "fruta", label: "Fruta", emoji: "🍎", match: ["manzana", "naranja", "platano"] },
+  { id: "frutos_secos", label: "Frutos secos", emoji: "🥜", match: ["frutos_secos"] },
+  { id: "palta", label: "Palta", emoji: "🥑", match: ["palta", "pan_integral"] },
+  { id: "pan_integral", label: "Pan integral", emoji: "🍞", match: ["pan_integral"] },
+  { id: "quinoa", label: "Quinoa / choclo", emoji: "🌽", match: ["choclo_quinoa"] }
+];
+
+/* Preferencias configurables (gustos) */
+const ETIQUETAS_GUSTOS = [
+  { id: "vegetariano", label: "Vegetariano", desc: "Sin carne ni pescado" },
+  { id: "mediterranea", label: "Estilo mediterráneo", desc: "Priorizar pescado, verduras, legumbres, aceite de oliva" },
+  { id: "proteina_alta", label: "Alta proteína", desc: "Favorecer opciones ricas en proteína" },
+  { id: "sin_gluten", label: "Sin gluten", desc: "Evitar trigo, avena no certificada, pan" }
+];
+
+if (typeof module !== "undefined") {
+  module.exports = { ALIMENTOS, BEBIDAS, DESPENSA_OPCIONES, ETIQUETAS_GUSTOS, MOMENTOS };
+}
