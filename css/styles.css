@@ -210,3 +210,5 @@ h3.sub-titulo { font-size: .95rem; color: var(--gris); margin: 20px 0 8px; text-
 .perfil-reco { background: #e6f4ec; color: #1f5a41; }
 .perfil-mod  { background: #fff4e0; color: #9a6400; }
 .perfil-ocas { background: #fde7e7; color: #b23030; }
+
+.version { margin-top: 6px; opacity: .7; font-size: .72rem; }

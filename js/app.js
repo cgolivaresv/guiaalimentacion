@@ -12,6 +12,7 @@
         sugerimos la mejor alternativa disponible.
    ============================================================ */
 
+const APP_VERSION = "1.2.0";
 const LS_KEY = "guiaalim_prefs_v1";
 
 const estado = {
@@ -357,6 +358,8 @@ function initEventos() {
 document.addEventListener("DOMContentLoaded", () => {
   initEventos();
   actualizarSaludo();
+  const vEl = $("#app-version");
+  if (vEl) vEl.textContent = "v" + APP_VERSION;
   mostrarPantalla("pantalla-inicio");
   // Registrar service worker (PWA)
   if ("serviceWorker" in navigator) {
