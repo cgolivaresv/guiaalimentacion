@@ -4,7 +4,7 @@
    arma tu plato, lista de compras, progreso de peso, ajustes).
    ============================================================ */
 
-const APP_VERSION = "2.2.0";
+const APP_VERSION = "2.3.0";
 
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
@@ -70,12 +70,36 @@ function mejoresAlimentos(momento, universo) {
     .map(x => x.item);
 }
 
+/* ---------- Margen del día y extras elegibles ---------- */
+function margenKcal() {
+  const meta = Store.prefs().metaCalorias;
+  if (!meta) return null;                       // sin meta no hay margen que calcular
+  return meta - Store.totalesHoy().kcal;
+}
+// Un extra (antojo/alcohol) solo es elegible si hay meta y aún cabe en el día
+function extrasEligibles(tipo) {
+  const rem = margenKcal();
+  if (rem == null) return [];
+  const nm = Store.prefs().noMeGusta || [];
+  return EXTRAS.filter(e => e.tipo === tipo && e.kcal <= rem && !nm.includes(e.id));
+}
+function esExtra(item) { return item && item.saciedad === undefined && !!item.perfil; }
+
 /* ---------- Tarjeta de sugerencia ---------- */
 function tarjetaSugerencia(item, tipo) {
-  const n = nutriDe(item.id);
   const fav = Store.esFavorito(item.id);
   let extra = "";
-  if (tipo === "hambre") {
+  if (esExtra(item)) {
+    const info = PERFIL_INFO[item.perfil] || PERFIL_INFO.ocasional;
+    const rem = margenKcal();
+    extra = `<div class="meta">
+        ${item.kcal ? `<span class="chip">~${item.kcal} kcal</span>` : ""}
+        ${item.prot ? `<span class="chip">${item.prot} g proteína</span>` : ""}
+        <span class="perfil-tag ${info.cls}">${info.txt}</span>
+      </div>
+      ${rem != null ? `<p class="margen-nota">🎉 Te queda margen hoy (~${Math.max(0, rem)} kcal). Un gusto medido entra; disfrútalo sin culpa.</p>` : ""}`;
+  } else if (tipo === "hambre") {
+    const n = nutriDe(item.id);
     extra = `<div class="meta">
         <span class="chip">Saciedad ${"●".repeat(item.saciedad)}${"○".repeat(5 - item.saciedad)}</span>
         <span class="chip">Densidad: ${item.densidad}</span>
@@ -88,7 +112,7 @@ function tarjetaSugerencia(item, tipo) {
   }
 
   let productos = "";
-  if (tipo === "hambre") {
+  if (tipo === "hambre" && !esExtra(item)) {
     const ps = productosDe(item.id).filter(p => superActivo(p));
     if (ps.length) {
       productos = `<div class="productos-super">
@@ -103,31 +127,39 @@ function tarjetaSugerencia(item, tipo) {
     <div class="sugerencia-emoji">${item.emoji}</div>
     <h2>${item.nombre}</h2>
     ${extra}
-    <p class="porque">💡 ${item.porque}</p>
+    <p class="porque">💡 ${item.porque || item.nota || ""}</p>
     ${productos}`;
 }
 
 function sugerir(tipo, universo) {
   estado.tipoActual = tipo;
   const momento = momentoActual();
-  let item;
+  let lista;
   if (tipo === "sed") {
-    item = BEBIDAS.filter(b => !estado.descartados.includes(b.id))[0] || BEBIDAS[0];
+    lista = BEBIDAS.filter(b => !estado.descartados.includes(b.id))
+      .map(b => ({ item: b, score: (BEBIDAS.length - BEBIDAS.indexOf(b)) * 10 }));
+    extrasEligibles("sed").filter(e => !estado.descartados.includes(e.id))
+      .forEach(e => lista.push({ item: e, score: 5 + Math.random() * 8 }));
+    lista = lista.sort((a, b) => b.score - a.score).map(x => x.item);
   } else {
-    const lista = mejoresAlimentos(momento, universo);
-    if (!lista.length) {
-      $("#contenido-sugerencia").innerHTML = `<p class="porque">No encuentro una opción con tus filtros. Prueba quitar alguna restricción en Ajustes, o un vaso de agua y espera 15 minutos.</p>`;
-      $("#acciones-sugerencia").style.display = "none";
-      navegar("pantalla-sugerencia");
-      return;
-    }
-    item = lista[0];
+    lista = (universo || ALIMENTOS).filter(pasaGustos).filter(i => !estado.descartados.includes(i.id))
+      .map(i => ({ item: i, score: puntuar(i, momento) }));
+    extrasEligibles("hambre").filter(e => !estado.descartados.includes(e.id))
+      .forEach(e => lista.push({ item: e, score: 5 + Math.random() * 8 }));
+    lista = lista.sort((a, b) => b.score - a.score).map(x => x.item);
   }
+  if (!lista.length) {
+    $("#contenido-sugerencia").innerHTML = `<p class="porque">No encuentro una opción con tus filtros. Prueba quitar alguna restricción en Ajustes, o un vaso de agua y espera 15 minutos.</p>`;
+    $("#acciones-sugerencia").style.display = "none";
+    navegar("pantalla-sugerencia");
+    return;
+  }
+  const item = lista[0];
   estado.ultimaSugerencia = item;
   $("#momento-label").textContent = "Según la hora (" + MOMENTO_LABEL[momento] + ")";
   $("#contenido-sugerencia").innerHTML = tarjetaSugerencia(item, tipo);
   $("#acciones-sugerencia").style.display = "flex";
-  $("#btn-comi").style.display = tipo === "hambre" ? "block" : "none";
+  $("#btn-comi").style.display = (tipo === "hambre" || esExtra(item)) ? "block" : "none";
   bindFav(item, tipo);
   navegar("pantalla-sugerencia");
 }
@@ -497,16 +529,16 @@ function initEventos() {
   // Sugerencia
   $("#btn-comi").addEventListener("click", () => {
     const it = estado.ultimaSugerencia; if (!it) return;
-    const n = nutriDe(it.id) || {};
+    const n = nutriDe(it.id) || { kcal: it.kcal || 0, prot: it.prot || 0 };
     Store.agregarComida({ id: it.id, nombre: it.nombre, kcal: n.kcal || 0, prot: n.prot || 0 });
-    Store.registrarAceptacion(it.id);
+    if (!esExtra(it)) Store.registrarAceptacion(it.id);
     navegar("pantalla-hoy");
   });
   $("#btn-no-tengo").addEventListener("click", abrirDespensa);
   $("#btn-otra").addEventListener("click", () => { if (estado.ultimaSugerencia) estado.descartados.push(estado.ultimaSugerencia.id); sugerir(estado.tipoActual); });
   $("#btn-compartir").addEventListener("click", () => {
     const it = estado.ultimaSugerencia; if (!it) return;
-    const txt = `Guía de Alimentación sugiere: ${it.nombre}. ${it.porque}`;
+    const txt = `Guía de Alimentación sugiere: ${it.nombre}. ${it.porque || it.nota || ""}`;
     if (navigator.share) navigator.share({ text: txt }).catch(() => {});
     else if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => toast("Copiado ✓")).catch(() => {});
   });

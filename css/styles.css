@@ -346,3 +346,6 @@ body { height: 100dvh; overflow: hidden; }
 .buscar-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 3px; }
 .buscar-nota { grid-column: 1 / -1; color: var(--gris); font-size: .82rem; line-height: 1.4; margin: 0; }
 .btn-mini { background: var(--verde); color: #fff; border: none; border-radius: 10px; padding: 8px 12px; font-weight: 700; font-size: .82rem; cursor: pointer; white-space: nowrap; }
+
+.margen-nota { background: #fff4e0; color: #8a5a00; border-radius: 12px; padding: 10px 14px; margin-top: 12px; font-size: .9rem; text-align: left; }
+html.tema-oscuro .margen-nota { background: #3a2a10; color: #ffd9a0; }
