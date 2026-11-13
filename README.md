@@ -52,6 +52,15 @@ El motor de sugerencias prioriza alimentos de **alta saciedad y baja densidad en
 - McKiernan F, Hollis JH, McCabe GP, Mattes RD. *Thirst-drinking, hunger-eating; tight coupling?* J Am Diet Assoc, 2009.
 - Revisiones sobre proteína y saciedad, y sobre fibra/beta-glucano de avena y control del apetito.
 
+### Fuentes de datos de nutrición
+
+- **Open Food Facts** (ODbL): productos envasados por código de barras o texto, con Nutri-Score y grupo NOVA. API sin clave.
+- **USDA FoodData Central**: alimentos genéricos (en inglés). API con clave gratuita (o DEMO_KEY).
+- **Sellos "Alto en"**: se calculan automáticamente con los umbrales de la **Ley 20.606** de Chile (sólidos por 100 g; líquidos por 100 ml).
+- **Valores base** de `data.js`: estimaciones orientativas basadas en tablas públicas (incl. Tabla Chilena de Composición de Alimentos, INTA/MINSAL).
+
+> Nota: las consultas en línea y el escáner de cámara funcionan en el sitio publicado (GitHub Pages), no en la vista previa de Claude.
+
 > ⚠️ **Aviso**: es orientación general basada en evidencia. **No reemplaza** la indicación de tu médico ni de un nutricionista, sobre todo si tienes alguna condición de salud. Para un plan personalizado y seguro, consulta a un profesional.
 
 ---
