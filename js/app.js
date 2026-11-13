@@ -4,7 +4,7 @@
    arma tu plato, lista de compras, progreso de peso, ajustes).
    ============================================================ */
 
-const APP_VERSION = "2.4.1";
+const APP_VERSION = "2.4.2";
 
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));

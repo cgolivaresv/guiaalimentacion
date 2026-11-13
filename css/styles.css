@@ -356,3 +356,6 @@ html.tema-oscuro .margen-nota { background: #3a2a10; color: #ffd9a0; }
 #escaner-region { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
 #escaner-region video { width: 100% !important; border-radius: 12px; }
 .escaner-box .sub { margin: 8px 0; }
+
+/* Pie encima de la navbar: sin safe-area (lo maneja la navbar) */
+.pie { padding: 6px 16px; }
