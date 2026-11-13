@@ -4,7 +4,7 @@
    arma tu plato, lista de compras, progreso de peso, ajustes).
    ============================================================ */
 
-const APP_VERSION = "2.4.0";
+const APP_VERSION = "2.4.1";
 
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
@@ -511,8 +511,9 @@ function guardarAjustes() {
 
 /* ---- Calculadora de calorías (Mifflin-St Jeor) ---- */
 function calcularCalorias() {
+  const num = s => parseFloat(String(s || "").replace(",", ".").replace(/[^0-9.]/g, ""));
   const sexo = $("#calc-sexo").value;
-  const edad = +$("#calc-edad").value, peso = +$("#calc-peso").value, talla = +$("#calc-talla").value;
+  const edad = num($("#calc-edad").value), peso = num($("#calc-peso").value), talla = num($("#calc-talla").value);
   const act = +$("#calc-actividad").value;
   if (!edad || !peso || !talla) { $("#calc-resultado").innerHTML = "Completa edad, peso y talla."; return; }
   let tmb = 10 * peso + 6.25 * talla - 5 * edad + (sexo === "h" ? 5 : -161);
@@ -577,6 +578,13 @@ function actualizarSaludo() {
 
 /* ---------- Eventos ---------- */
 function initEventos() {
+  // Al enfocar un campo, súbelo al centro para que el teclado no lo tape
+  document.addEventListener("focusin", e => {
+    if (e.target.matches && e.target.matches("input, select, textarea")) {
+      setTimeout(() => { try { e.target.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (x) {} }, 300);
+    }
+  });
+
   // Nav
   $$(".nav-item").forEach(b => b.addEventListener("click", () => navegar(b.dataset.goto)));
   $("#btn-ajustes").addEventListener("click", abrirAjustes);
