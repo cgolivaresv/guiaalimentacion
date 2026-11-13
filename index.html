@@ -25,30 +25,16 @@
         <button id="btn-hambre" class="grande hambre">🍽️<span>Tengo hambre</span></button>
         <button id="btn-sed" class="grande sed">💧<span>Tengo sed</span></button>
       </div>
-      <button id="btn-productos" class="btn-texto" style="margin-top:18px;width:100%">🛒 Ver productos del súper recomendados</button>
-    </section>
-
-    <!-- PRODUCTOS DEL SÚPER -->
-    <section id="pantalla-productos" class="pantalla">
-      <h2>Productos del súper</h2>
-      <p class="sub">Opciones reales de Jumbo y Líder que encajan con el plan. Precios y stock varían.</p>
-      <div id="lista-productos"></div>
-      <div class="acciones">
-        <button id="btn-productos-volver" class="btn-texto">Volver</button>
-      </div>
+      <button id="btn-porcion" class="btn-texto" style="margin-top:16px;width:100%">🖐️ Guía de porciones (mano)</button>
     </section>
 
     <!-- PRUEBA DE AGUA -->
     <section id="pantalla-agua" class="pantalla">
       <div class="sugerencia-emoji">💧</div>
       <h2>Primero, un vaso de agua</h2>
-      <p class="porque">
-        Las señales de hambre y sed pueden solaparse, sobre todo en tardes largas o días con poco
-        líquido. Beber agua es un paso sin costo: si el hambre persiste tras unos 10-15 minutos,
-        es hambre real y te sugiero un alimento.
-      </p>
+      <p class="porque">Las señales de hambre y sed pueden solaparse, sobre todo en tardes largas o días con poco líquido. Beber agua es un paso sin costo: si el hambre persiste tras 10-15 minutos, es hambre real y te sugiero un alimento.</p>
       <div class="acciones">
-        <button id="agua-la-probare" class="btn-primario">Ok, bebo agua y espero</button>
+        <button id="agua-la-probare" class="btn-primario">Ok, bebo agua y espero (+1 vaso)</button>
         <button id="agua-sigo-hambre" class="btn-secundario">Sigo con hambre, sugiéreme comida</button>
       </div>
     </section>
@@ -58,9 +44,13 @@
       <p id="momento-label" class="momento"></p>
       <div id="contenido-sugerencia" class="tarjeta"></div>
       <div id="acciones-sugerencia" class="acciones">
-        <button id="btn-gracias" class="btn-primario">👍 Perfecto, eso comeré</button>
+        <button id="btn-comi" class="btn-primario">✅ Me lo comí (registrar)</button>
         <button id="btn-no-tengo" class="btn-secundario">No lo tengo</button>
-        <button id="btn-otra" class="btn-texto">Sugerir otra opción</button>
+        <div class="acciones-fila">
+          <button id="btn-otra" class="btn-texto">🔄 Otra opción</button>
+          <button id="btn-compartir" class="btn-texto">📤 Compartir</button>
+        </div>
+        <button id="btn-sug-volver" class="btn-texto">Volver al inicio</button>
       </div>
     </section>
 
@@ -76,18 +66,138 @@
       </div>
     </section>
 
+    <!-- HOY (registro) -->
+    <section id="pantalla-hoy" class="pantalla">
+      <h2>Hoy</h2>
+      <div class="tarjeta-mini racha-card">🔥 Racha: <strong id="racha">0</strong> días cumpliendo tu meta de agua</div>
+
+      <h3 class="sub-titulo">💧 Agua</h3>
+      <div class="agua-control">
+        <button id="agua-menos" class="circ">−</button>
+        <div class="agua-num"><strong id="agua-vasos">0</strong> / <span id="agua-meta">8</span> vasos</div>
+        <button id="agua-mas" class="circ">+</button>
+      </div>
+      <div class="agua-barra"><div id="agua-barra-fill" class="agua-barra-fill"></div></div>
+
+      <h3 class="sub-titulo">🍽️ Comidas de hoy</h3>
+      <div class="tarjeta-mini">Total: <strong id="hoy-kcal">0</strong> <span id="hoy-kcal-meta"></span> kcal · <strong id="hoy-prot">0</strong> g proteína</div>
+      <select id="comida-select" class="input-texto" style="width:100%;margin-top:10px"></select>
+      <div id="lista-comidas" class="lista"></div>
+    </section>
+
+    <!-- ARMA TU PLATO -->
+    <section id="pantalla-plato" class="pantalla">
+      <h2>Arma tu plato</h2>
+      <p class="sub">Un plato equilibrado para bajar de peso sin pasar hambre.</p>
+      <div id="plato-contenido" class="tarjeta"></div>
+      <div class="acciones">
+        <button id="btn-plato-otro" class="btn-secundario">🔄 Otra combinación</button>
+        <button id="btn-plato-compras" class="btn-primario">🛒 Generar lista de compras</button>
+      </div>
+    </section>
+
+    <!-- LISTA DE COMPRAS -->
+    <section id="pantalla-compras" class="pantalla">
+      <h2>Lista de compras</h2>
+      <p class="sub">Según tus favoritos y los recomendados de tu súper.</p>
+      <div id="lista-compras" class="lista"></div>
+      <textarea id="compras-texto" class="input-texto" rows="6" style="width:100%;margin-top:10px" readonly></textarea>
+      <div class="acciones">
+        <button id="btn-compras-copiar" class="btn-primario">📋 Copiar lista</button>
+        <button id="btn-compras-volver" class="btn-texto">Volver</button>
+      </div>
+    </section>
+
+    <!-- PROGRESO -->
+    <section id="pantalla-progreso" class="pantalla">
+      <h2>Progreso de peso</h2>
+      <div class="peso-input">
+        <input type="number" id="input-peso" class="input-texto" placeholder="Peso hoy (kg)" step="0.1" inputmode="decimal">
+        <button id="btn-peso-guardar" class="btn-primario">Guardar</button>
+      </div>
+      <p id="peso-delta" class="peso-delta"></p>
+      <div id="grafico-peso"></div>
+      <div id="progreso-lista" class="lista"></div>
+    </section>
+
+    <!-- PRODUCTOS DEL SÚPER -->
+    <section id="pantalla-productos" class="pantalla">
+      <h2>Productos del súper</h2>
+      <div id="filtro-super" class="segmentado">
+        <button class="seg" data-super="ambos">Ambos</button>
+        <button class="seg" data-super="jumbo">Jumbo</button>
+        <button class="seg" data-super="lider">Líder</button>
+      </div>
+      <div id="lista-productos"></div>
+    </section>
+
+    <!-- PORCIONES -->
+    <section id="pantalla-porcion" class="pantalla">
+      <h2>Guía de porciones</h2>
+      <p class="sub">Usa tu mano para medir sin pesar nada.</p>
+      <div class="porcion-item"><span class="porcion-emoji">🖐️</span><div><strong>Palma</strong> = 1 porción de proteína (pollo, pescado, carne).</div></div>
+      <div class="porcion-item"><span class="porcion-emoji">✊</span><div><strong>Puño</strong> = 1 porción de carbohidrato (arroz, fideos, papa) o de verduras.</div></div>
+      <div class="porcion-item"><span class="porcion-emoji">👍</span><div><strong>Pulgar</strong> = 1 porción de grasa (aceite, mantequilla, palta).</div></div>
+      <div class="porcion-item"><span class="porcion-emoji">🤲</span><div><strong>Dos manos</strong> = verduras de hoja; llénalas sin culpa.</div></div>
+      <div class="acciones"><button id="btn-porcion-volver" class="btn-texto">Volver</button></div>
+    </section>
+
     <!-- AJUSTES -->
     <section id="pantalla-ajustes" class="pantalla">
-      <h2>Tus gustos</h2>
-      <label class="fila-ajuste">
-        <span>Tu nombre (opcional)</span>
-        <input type="text" id="input-nombre" placeholder="Carlos" class="input-texto">
-      </label>
+      <h2>Ajustes</h2>
+      <label class="fila-ajuste"><span>Tu nombre</span><input type="text" id="input-nombre" placeholder="Carlos" class="input-texto"></label>
+
+      <h3 class="sub-titulo">Tu supermercado</h3>
+      <div id="ajustes-super" class="segmentado">
+        <button class="seg" data-super="ambos">Ambos</button>
+        <button class="seg" data-super="jumbo">Jumbo</button>
+        <button class="seg" data-super="lider">Líder</button>
+      </div>
+
       <h3 class="sub-titulo">Preferencias</h3>
       <div id="ajustes-gustos"></div>
       <h3 class="sub-titulo">Qué evitar</h3>
       <div id="ajustes-dislikes"></div>
+
+      <h3 class="sub-titulo">Meta de agua (vasos/día)</h3>
+      <input type="number" id="input-meta-agua" class="input-texto" min="1" max="20" value="8">
+
+      <h3 class="sub-titulo">Calculadora de calorías</h3>
+      <div class="calc-grid">
+        <select id="calc-sexo" class="input-texto"><option value="h">Hombre</option><option value="m">Mujer</option></select>
+        <input type="number" id="calc-edad" class="input-texto" placeholder="Edad" inputmode="numeric">
+        <input type="number" id="calc-peso" class="input-texto" placeholder="Peso kg" inputmode="decimal">
+        <input type="number" id="calc-talla" class="input-texto" placeholder="Talla cm" inputmode="numeric">
+        <select id="calc-actividad" class="input-texto">
+          <option value="1.2">Sedentario</option>
+          <option value="1.375">Ligero (1-3 días)</option>
+          <option value="1.55">Moderado (3-5 días)</option>
+          <option value="1.725">Activo (6-7 días)</option>
+        </select>
+        <button id="btn-calc" class="btn-primario">Calcular</button>
+      </div>
+      <p id="calc-resultado" class="porque" style="margin-top:10px"></p>
+
+      <h3 class="sub-titulo">Recordatorios</h3>
+      <label class="fila-ajuste"><span>💧 Recordarme tomar agua</span><input type="checkbox" id="rec-agua"></label>
+      <label class="fila-ajuste"><span>🍽️ Recordarme registrar comidas</span><input type="checkbox" id="rec-comidas"></label>
+      <p class="sub" style="font-size:.78rem">Las notificaciones funcionan con la app abierta o instalada; tu teléfono pedirá permiso.</p>
+
+      <h3 class="sub-titulo">Tema</h3>
+      <div id="ajustes-tema" class="segmentado">
+        <button class="seg" data-tema="auto">Auto</button>
+        <button class="seg" data-tema="claro">Claro</button>
+        <button class="seg" data-tema="oscuro">Oscuro</button>
+      </div>
+
+      <h3 class="sub-titulo">Tus datos</h3>
       <div class="acciones">
+        <button id="btn-exportar" class="btn-secundario">⬇️ Exportar (respaldo)</button>
+        <label class="btn-secundario" style="text-align:center;cursor:pointer">⬆️ Importar<input type="file" id="input-importar" accept="application/json" hidden></label>
+        <button id="btn-borrar" class="btn-texto" style="color:#b23030">Borrar todos mis datos</button>
+      </div>
+
+      <div class="acciones" style="margin-top:20px">
         <button id="btn-guardar-ajustes" class="btn-primario">Guardar</button>
         <button id="btn-cancelar-ajustes" class="btn-texto">Cancelar</button>
       </div>
@@ -95,12 +205,21 @@
 
   </main>
 
+  <nav class="navbar">
+    <button class="nav-item activo" data-goto="pantalla-inicio">🏠<span>Inicio</span></button>
+    <button class="nav-item" data-goto="pantalla-hoy">📋<span>Hoy</span></button>
+    <button class="nav-item" data-goto="pantalla-plato">🍽️<span>Plato</span></button>
+    <button class="nav-item" data-goto="pantalla-progreso">📈<span>Peso</span></button>
+    <button class="nav-item" data-goto="pantalla-productos">🛒<span>Súper</span></button>
+  </nav>
+
   <footer class="pie">
     <p>Orientación general basada en evidencia. No reemplaza a tu médico ni nutricionista.</p>
     <p class="version">Guía de Alimentación <span id="app-version"></span></p>
   </footer>
 
   <script src="./js/data.js"></script>
+  <script src="./js/store.js"></script>
   <script src="./js/app.js"></script>
 </body>
 </html>

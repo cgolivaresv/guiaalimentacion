@@ -342,8 +342,118 @@ const ALIMENTOS = [
     etiquetas: ["vegetariano"],
     porcion: "80 g en seco",
     porque: "Carbohidrato rápido y rendidor. Prefiere integral o 'proslow' (menor índice glicémico), mide la porción y súmale verduras y proteína para que sacie más."
+  },
+  {
+    id: "cazuela",
+    nombre: "Cazuela de pollo (liviana)",
+    emoji: "🍲",
+    categorias: ["sopa", "proteina", "verdura"],
+    saciedad: 5,
+    densidad: "baja",
+    proteina: "alta", fibra: "alta", agua: "alta",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["sin_gluten", "proteina_alta", "fibra_alta"],
+    porcion: "1 plato hondo",
+    porque: "Clásico chileno muy saciante: caldo (agua), verduras (fibra) y presa de pollo (proteína). Saca la piel y desgrasa el caldo."
+  },
+  {
+    id: "charquican",
+    nombre: "Charquicán liviano",
+    emoji: "🥘",
+    categorias: ["verdura", "tuberculo"],
+    saciedad: 4,
+    densidad: "baja",
+    proteina: "media", fibra: "alta", agua: "alta",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["sin_gluten", "fibra_alta"],
+    porcion: "1 plato",
+    porque: "Zapallo, papa y verduras con un poco de carne magra: mucho volumen y fibra con pocas calorías."
+  },
+  {
+    id: "ensalada_chilena",
+    nombre: "Ensalada a la chilena",
+    emoji: "🍅",
+    categorias: ["verdura"],
+    saciedad: 3,
+    densidad: "baja",
+    proteina: "baja", fibra: "media", agua: "alta",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["mediterranea", "vegetariano", "sin_gluten"],
+    porcion: "1 plato",
+    porque: "Tomate y cebolla: casi pura agua y fibra. Usa poco aceite para mantenerla liviana."
+  },
+  {
+    id: "porotos_granados",
+    nombre: "Porotos granados",
+    emoji: "🫘",
+    categorias: ["legumbre", "verdura"],
+    saciedad: 5,
+    densidad: "baja",
+    proteina: "alta", fibra: "alta", agua: "alta",
+    momentos: ["almuerzo", "cena"],
+    etiquetas: ["vegetariano", "sin_gluten", "proteina_alta", "fibra_alta"],
+    porcion: "1 plato",
+    porque: "Legumbre + choclo + zapallo: plato chileno muy saciante por su fibra y proteína vegetal."
   }
 ];
+
+/* ---------- Nutrición aproximada por porción (kcal y proteína g) ----------
+   Valores orientativos de tablas públicas; varían según preparación.
+   sellos: advertencias "Alto en" (ley chilena de etiquetado) para
+   productos/preparaciones donde aplica.                                   */
+const NUTRI = {
+  huevo_cocido:   { kcal: 150, prot: 13 },
+  yogur_natural:  { kcal: 100, prot: 10 },
+  queso_fresco:   { kcal: 90,  prot: 11 },
+  lentejas:       { kcal: 230, prot: 18 },
+  porotos:        { kcal: 245, prot: 15 },
+  avena:          { kcal: 180, prot: 6 },
+  papa_cocida:    { kcal: 130, prot: 3 },
+  pescado:        { kcal: 150, prot: 26 },
+  pollo:          { kcal: 200, prot: 30 },
+  ensalada:       { kcal: 80,  prot: 2 },
+  verduras_salteadas: { kcal: 90, prot: 3 },
+  manzana:        { kcal: 95,  prot: 0 },
+  naranja:        { kcal: 70,  prot: 1 },
+  platano:        { kcal: 105, prot: 1 },
+  frutos_secos:   { kcal: 180, prot: 5 },
+  palta:          { kcal: 160, prot: 2 },
+  sopa_verduras:  { kcal: 120, prot: 4 },
+  pan_integral:   { kcal: 160, prot: 7 },
+  choclo_quinoa:  { kcal: 160, prot: 6 },
+  tomate_pepino:  { kcal: 30,  prot: 1 },
+  edamame:        { kcal: 190, prot: 17 },
+  atun_ensalada:  { kcal: 220, prot: 28 },
+  carne_molida:   { kcal: 220, prot: 28 },
+  arroz:          { kcal: 205, prot: 4 },
+  fideos:         { kcal: 280, prot: 10 },
+  cazuela:        { kcal: 280, prot: 25 },
+  charquican:     { kcal: 260, prot: 12 },
+  ensalada_chilena: { kcal: 70, prot: 1 },
+  porotos_granados: { kcal: 320, prot: 16 }
+};
+function nutriDe(id) { return NUTRI[id] || null; }
+
+/* Sellos "Alto en ..." para productos ocasionales/altos (referencial) */
+const SELLOS_PRODUCTO = {
+  p_cola:    ["azucar", "calorias"],
+  p_lays:    ["grasas", "sodio", "calorias"],
+  p_doritos: ["grasas", "sodio", "calorias"],
+  p_nuggets: ["grasas", "sodio", "calorias"],
+  p_manjar:  ["azucar", "calorias"],
+  p_helado:  ["azucar", "grasas", "calorias"],
+  p_mantequilla: ["grasas", "calorias"]
+};
+const SELLO_LABEL = { azucar: "ALTO EN AZÚCARES", grasas: "ALTO EN GRASAS SAT.", sodio: "ALTO EN SODIO", calorias: "ALTO EN CALORÍAS" };
+
+/* Qué supermercados vende un producto (según su campo 'super') */
+function supersDe(p) {
+  const s = (p.super || "").toLowerCase();
+  const out = [];
+  if (s.includes("jumbo")) out.push("Jumbo");
+  if (s.includes("lider") || s.includes("líder")) out.push("Líder");
+  return out.length ? out : ["Otro"];
+}
 
 /* ---------- BEBIDAS (para la SED) ---------- */
 const BEBIDAS = [
@@ -529,5 +639,5 @@ function productosDe(idAlimento) {
 }
 
 if (typeof module !== "undefined") {
-  module.exports = { ALIMENTOS, BEBIDAS, DESPENSA_OPCIONES, ETIQUETAS_GUSTOS, MOMENTOS, PRODUCTOS, productosDe, perfilDe };
+  module.exports = { ALIMENTOS, BEBIDAS, DESPENSA_OPCIONES, ETIQUETAS_GUSTOS, MOMENTOS, PRODUCTOS, productosDe, perfilDe, NUTRI, nutriDe, SELLOS_PRODUCTO, SELLO_LABEL, supersDe };
 }

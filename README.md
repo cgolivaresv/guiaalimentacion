@@ -21,6 +21,17 @@ Pensada como apoyo para **bajar de peso** sin pasar hambre, favoreciendo aliment
 
 Tus gustos se guardan en el navegador (`localStorage`). Funciona **offline** e **instalable** en el teléfono (PWA).
 
+### Funciones (v2.0)
+
+- **Inicio**: hambre/sed, prueba de agua, guía de porciones con la mano.
+- **Hoy**: registro de agua con meta y **racha**, registro de comidas con kcal/proteína del día.
+- **Plato**: generador de plato equilibrado (½ verduras, ¼ proteína, ¼ carbo) y **lista de compras**.
+- **Peso**: registro de peso con **gráfico de progreso** y diferencia desde el inicio.
+- **Súper**: catálogo de productos reales filtrable por Jumbo/Líder, con perfil (recomendado/moderar/ocasional) y sellos "Alto en".
+- **Favoritos**: marca alimentos; influyen en las sugerencias.
+- **Aprende de ti**: afina las sugerencias según lo que aceptas.
+- **Ajustes**: supermercado, gustos, meta de agua, **calculadora de calorías** (Mifflin-St Jeor), recordatorios (notificaciones), **modo oscuro**, y exportar/importar tus datos.
+
 ---
 
 ## Fundamento científico
@@ -49,11 +60,12 @@ El motor de sugerencias prioriza alimentos de **alta saciedad y baja densidad en
 
 ```
 guiaalimentacion/
-├── index.html              # Interfaz
-├── css/styles.css          # Estilos (mobile-first)
+├── index.html              # Interfaz (navegación por pantallas)
+├── css/styles.css          # Estilos (mobile-first + modo oscuro)
 ├── js/
-│   ├── data.js             # Base de datos de alimentos/bebidas + razones científicas
-│   └── app.js              # Lógica: flujo hambre/sed, filtros, ranking, despensa
+│   ├── data.js             # Alimentos, bebidas, productos de súper, nutrición y sellos
+│   ├── store.js            # Estado persistente (localStorage): registro, peso, favoritos…
+│   └── app.js              # Lógica: sugerencias, hoy, plato, compras, progreso, ajustes
 ├── manifest.webmanifest    # PWA
 ├── sw.js                   # Service worker (offline)
 └── icons/                  # Iconos PWA
@@ -71,8 +83,7 @@ python3 -m http.server 8080
 
 ## Ideas para seguir
 
-- Más alimentos y platos chilenos en `data.js`.
-- Registro del día (qué comiste / cuánta agua) y racha.
-- Recordatorios de hidratación por hora.
-- Ajuste del tamaño de porción según objetivo de calorías.
-- Sincronización entre dispositivos (hoy los gustos viven solo en el navegador).
+- Sincronización entre dispositivos (hoy los datos viven solo en el navegador; ya hay exportar/importar).
+- Recordatorios en segundo plano reales (requiere push server; hoy funcionan con la app abierta).
+- Metas de proteína diaria y anillos de progreso.
+- Más platos chilenos y productos de otros supermercados (Tottus, Unimarc, Santa Isabel).
