@@ -12,7 +12,10 @@
 <body>
   <header class="barra">
     <h1 class="logo">🥗 Guía</h1>
-    <button id="btn-ajustes" class="icono" aria-label="Ajustes">⚙️</button>
+    <div class="barra-acciones">
+      <button id="btn-buscar" class="icono" aria-label="Buscar">🔍</button>
+      <button id="btn-ajustes" class="icono" aria-label="Ajustes">⚙️</button>
+    </div>
   </header>
 
   <main class="app">
@@ -48,6 +51,7 @@
         <button id="btn-no-tengo" class="btn-secundario">No lo tengo</button>
         <div class="acciones-fila">
           <button id="btn-otra" class="btn-texto">🔄 Otra opción</button>
+          <button id="btn-buscar-otra" class="btn-texto">🔍 Buscar otra</button>
           <button id="btn-compartir" class="btn-texto">📤 Compartir</button>
         </div>
         <button id="btn-sug-volver" class="btn-texto">Volver al inicio</button>
@@ -131,6 +135,19 @@
         <button class="seg" data-super="lider">Líder</button>
       </div>
       <div id="lista-productos"></div>
+    </section>
+
+    <!-- BUSCADOR -->
+    <section id="pantalla-buscar" class="pantalla">
+      <h2>Buscar</h2>
+      <input type="search" id="buscar-input" class="input-texto" style="width:100%" placeholder="Ej: cerveza, pollo, empanada…" autocomplete="off">
+      <div id="buscar-filtros" class="segmentado" style="margin-top:10px">
+        <button class="seg activo" data-filtro="todo">Todo</button>
+        <button class="seg" data-filtro="hambre">Comida</button>
+        <button class="seg" data-filtro="sed">Bebida</button>
+      </div>
+      <div id="buscar-resultados" class="lista"></div>
+      <div class="acciones"><button id="btn-buscar-volver" class="btn-texto">Volver</button></div>
     </section>
 
     <!-- PORCIONES -->
@@ -220,8 +237,7 @@
   </nav>
 
   <footer class="pie">
-    <p>Orientación general basada en evidencia. No reemplaza a tu médico ni nutricionista.</p>
-    <p class="version">Guía de Alimentación <span id="app-version"></span></p>
+    <p>Orientación general · no reemplaza a tu médico ni nutricionista · <span id="app-version"></span></p>
   </footer>
 
   <script src="./js/data.js"></script>

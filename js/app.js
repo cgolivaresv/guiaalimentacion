@@ -4,7 +4,7 @@
    arma tu plato, lista de compras, progreso de peso, ajustes).
    ============================================================ */
 
-const APP_VERSION = "2.1.0";
+const APP_VERSION = "2.2.0";
 
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
@@ -144,6 +144,47 @@ function bindFav(item, tipo) {
 
 function iniciarHambre() { estado.descartados = []; navegar("pantalla-agua"); }
 function iniciarSed() { estado.descartados = []; sugerir("sed"); }
+
+/* ---------- Buscador de alimentos/bebidas ---------- */
+function abrirBuscador(filtro) {
+  estado.filtroBuscar = filtro || null; // "sed" | "hambre" | null
+  $("#buscar-input").value = "";
+  renderBuscar("");
+  navegar("pantalla-buscar");
+  setTimeout(() => $("#buscar-input").focus(), 150);
+}
+function renderBuscar(q) {
+  let items = buscar(q);
+  if (estado.filtroBuscar) items = items.filter(i => i.tipo === estado.filtroBuscar);
+  const cont = $("#buscar-resultados");
+  if (!items.length) { cont.innerHTML = `<p class="sub">Sin resultados para "${q}".</p>`; return; }
+  cont.innerHTML = items.slice(0, 40).map(i => {
+    const perfil = i.perfil ? PERFIL_INFO[i.perfil] : null;
+    return `<div class="buscar-item">
+      <div class="buscar-info">
+        <span class="buscar-emoji">${i.emoji}</span>
+        <div>
+          <strong>${i.nombre}</strong>
+          <div class="buscar-tags">
+            ${i.kcal ? `<span class="chip">~${i.kcal} kcal</span>` : ""}
+            ${i.prot ? `<span class="chip">${i.prot} g prot</span>` : ""}
+            ${perfil ? `<span class="perfil-tag ${perfil.cls}">${perfil.txt}</span>` : ""}
+          </div>
+        </div>
+      </div>
+      <button class="btn-mini" data-reg="${i.id}">Registrar</button>
+      <p class="buscar-nota">${i.nota || ""}</p>
+    </div>`;
+  }).join("");
+  cont.querySelectorAll("[data-reg]").forEach(b => b.addEventListener("click", () => {
+    const it = items.find(x => x.id === b.dataset.reg);
+    if (!it) return;
+    Store.agregarComida({ id: it.id, nombre: it.nombre, kcal: it.kcal || 0, prot: it.prot || 0 });
+    if (it.esAlimento) Store.registrarAceptacion(it.id);
+    toast(it.nombre + " registrado ✓");
+    navegar("pantalla-hoy");
+  }));
+}
 
 /* ---------- Despensa ---------- */
 function abrirDespensa() {
@@ -433,6 +474,16 @@ function initEventos() {
   // Nav
   $$(".nav-item").forEach(b => b.addEventListener("click", () => navegar(b.dataset.goto)));
   $("#btn-ajustes").addEventListener("click", abrirAjustes);
+  $("#btn-buscar").addEventListener("click", () => abrirBuscador(null));
+
+  // Buscador
+  $("#buscar-input").addEventListener("input", e => renderBuscar(e.target.value));
+  $("#btn-buscar-volver").addEventListener("click", () => navegar("pantalla-inicio"));
+  $$("#buscar-filtros .seg").forEach(b => b.addEventListener("click", () => {
+    estado.filtroBuscar = b.dataset.filtro === "todo" ? null : b.dataset.filtro;
+    $$("#buscar-filtros .seg").forEach(x => x.classList.toggle("activo", x === b));
+    renderBuscar($("#buscar-input").value);
+  }));
 
   // Inicio
   $("#btn-hambre").addEventListener("click", iniciarHambre);
@@ -459,6 +510,7 @@ function initEventos() {
     if (navigator.share) navigator.share({ text: txt }).catch(() => {});
     else if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => toast("Copiado ✓")).catch(() => {});
   });
+  $("#btn-buscar-otra").addEventListener("click", () => abrirBuscador(estado.tipoActual));
   $("#btn-sug-volver").addEventListener("click", () => navegar("pantalla-inicio"));
 
   // Despensa

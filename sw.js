@@ -1,5 +1,5 @@
 /* Service worker simple: cachea la app para uso offline */
-const CACHE = "guiaalim-v2.1.0";
+const CACHE = "guiaalim-v2.2.0";
 const ASSETS = [
   "./",
   "./index.html",

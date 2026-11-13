@@ -630,6 +630,43 @@ const PRODUCTOS = [
   { id: "p_helado", nombre: "Postre / Helado", marca: "Soprole / Mega", super: "Jumbo", grupo: "🍟 Caprichos (ocasional)", perfil: "ocasional", nota: "Gusto ocasional; busca porciones individuales para controlar la cantidad." }
 ];
 
+/* ---------- EXTRAS buscables (no entran en las sugerencias, pero
+   existen para buscarlos y registrarlos: antojos, alcohol, etc.) ---------- */
+const EXTRAS = [
+  // Bebidas
+  { id: "x_cerveza", nombre: "Cerveza", emoji: "🍺", tipo: "sed", kcal: 150, prot: 1, perfil: "ocasional", nota: "El alcohol aporta calorías 'vacías' y abre el apetito. Si la tomas, alterna con agua y que sea ocasional." },
+  { id: "x_vino", nombre: "Vino (copa)", emoji: "🍷", tipo: "sed", kcal: 125, prot: 0, perfil: "ocasional", nota: "Una copa ocasional; el alcohol suma calorías y baja la saciedad." },
+  { id: "x_bebida_azucar", nombre: "Bebida gaseosa (con azúcar)", emoji: "🥤", tipo: "sed", kcal: 140, prot: 0, perfil: "ocasional", nota: "Azúcar líquida: calorías que no sacian. Mejor la versión zero o agua." },
+  { id: "x_bebida_zero", nombre: "Bebida gaseosa zero / sin azúcar", emoji: "🫗", tipo: "sed", kcal: 0, prot: 0, perfil: "moderar", nota: "Sin azúcar ni calorías; mejor que la azucarada, pero el agua sigue primero." },
+  { id: "x_jugo", nombre: "Jugo de fruta natural", emoji: "🧃", tipo: "sed", kcal: 110, prot: 1, perfil: "moderar", nota: "Aunque sea natural, concentra azúcar y sacia poco; prefiere la fruta entera." },
+  { id: "x_cafe_leche", nombre: "Café con leche (sin azúcar)", emoji: "☕", tipo: "sed", kcal: 60, prot: 3, perfil: "moderar", nota: "Hidrata y aporta algo de proteína; sin azúcar." },
+  // Antojos / comida
+  { id: "x_completo", nombre: "Completo", emoji: "🌭", tipo: "hambre", kcal: 450, prot: 14, perfil: "ocasional", nota: "Rico pero muy calórico. Compártelo o que sea un gusto ocasional." },
+  { id: "x_empanada", nombre: "Empanada", emoji: "🥟", tipo: "hambre", kcal: 350, prot: 12, perfil: "ocasional", nota: "Masa + relleno; de preferencia al horno y ocasional." },
+  { id: "x_sopaipilla", nombre: "Sopaipillas", emoji: "🫓", tipo: "hambre", kcal: 150, prot: 2, perfil: "ocasional", nota: "Fritas y densas; una o dos como gusto ocasional." },
+  { id: "x_pizza", nombre: "Pizza (porción)", emoji: "🍕", tipo: "hambre", kcal: 285, prot: 12, perfil: "ocasional", nota: "Por porción; acompáñala con ensalada y frena en 1-2." },
+  { id: "x_chocolate", nombre: "Chocolate", emoji: "🍫", tipo: "hambre", kcal: 150, prot: 2, perfil: "ocasional", nota: "Prefiere el amargo (70%+) y una porción pequeña." },
+  { id: "x_papas_fritas", nombre: "Papas fritas", emoji: "🍟", tipo: "hambre", kcal: 320, prot: 4, perfil: "ocasional", nota: "Alta densidad calórica; porción chica y ocasional." }
+];
+
+/* Índice unificado para el buscador (alimentos + bebidas + extras) */
+function itemsBuscables() {
+  const norm = s => (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  const out = [];
+  ALIMENTOS.forEach(a => { const n = NUTRI[a.id] || {}; out.push({ id: a.id, nombre: a.nombre, emoji: a.emoji, tipo: "hambre", kcal: n.kcal || 0, prot: n.prot || 0, nota: a.porque, esAlimento: true }); });
+  BEBIDAS.forEach(b => out.push({ id: b.id, nombre: b.nombre, emoji: b.emoji, tipo: "sed", kcal: 0, prot: 0, nota: b.porque, esAlimento: true }));
+  EXTRAS.forEach(e => out.push(Object.assign({ esAlimento: false }, e)));
+  out.forEach(i => i._n = norm(i.nombre));
+  return out;
+}
+function buscar(query) {
+  const norm = s => (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  const q = norm(query.trim());
+  const all = itemsBuscables();
+  if (!q) return all;
+  return all.filter(i => i._n.includes(q));
+}
+
 /* Perfil por defecto: los productos antiguos son 'recomendado' */
 function perfilDe(p) { return p.perfil || "recomendado"; }
 
@@ -639,5 +676,5 @@ function productosDe(idAlimento) {
 }
 
 if (typeof module !== "undefined") {
-  module.exports = { ALIMENTOS, BEBIDAS, DESPENSA_OPCIONES, ETIQUETAS_GUSTOS, MOMENTOS, PRODUCTOS, productosDe, perfilDe, NUTRI, nutriDe, SELLOS_PRODUCTO, SELLO_LABEL, supersDe };
+  module.exports = { ALIMENTOS, BEBIDAS, DESPENSA_OPCIONES, ETIQUETAS_GUSTOS, MOMENTOS, PRODUCTOS, productosDe, perfilDe, NUTRI, nutriDe, SELLOS_PRODUCTO, SELLO_LABEL, supersDe, EXTRAS, itemsBuscables, buscar };
 }

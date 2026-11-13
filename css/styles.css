@@ -324,3 +324,25 @@ html.tema-oscuro .pill-despensa, html.tema-oscuro .input-texto {
 .mini-track { height: 8px; background: var(--verde-claro); border-radius: 999px; overflow: hidden; }
 .mini-fill { height: 100%; width: 0; border-radius: 999px; transition: width .3s; }
 .mini-lbl { color: var(--gris); font-size: .78rem; }
+
+/* ============ v2.2 — layout sin scroll en inicio + buscador ============ */
+html, body { height: 100%; }
+body { height: 100dvh; overflow: hidden; }
+.barra { flex-shrink: 0; }
+.barra-acciones { display: flex; gap: 8px; }
+.app { flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; min-height: 0; padding-bottom: 20px; }
+.navbar { position: static; flex-shrink: 0; }
+.pie { flex-shrink: 0; padding: 8px 16px calc(8px + env(safe-area-inset-bottom)); }
+.pie p { margin: 0; }
+
+/* Inicio centrado, sin scroll */
+#pantalla-inicio.activa { display: flex; flex-direction: column; justify-content: center; min-height: 100%; }
+#pantalla-inicio .grande { padding: 26px 20px; }
+
+/* Buscador */
+.buscar-item { background: var(--card,#fff); border: 1px solid var(--borde); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; text-align: left; }
+.buscar-info { display: flex; align-items: center; gap: 10px; }
+.buscar-emoji { font-size: 1.6rem; }
+.buscar-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 3px; }
+.buscar-nota { grid-column: 1 / -1; color: var(--gris); font-size: .82rem; line-height: 1.4; margin: 0; }
+.btn-mini { background: var(--verde); color: #fff; border: none; border-radius: 10px; padding: 8px 12px; font-weight: 700; font-size: .82rem; cursor: pointer; white-space: nowrap; }
