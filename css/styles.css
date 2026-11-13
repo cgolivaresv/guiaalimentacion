@@ -318,3 +318,9 @@ html.tema-oscuro .pill-despensa, html.tema-oscuro .input-texto {
     background: var(--card); color: var(--texto);
   }
 }
+
+/* Barras de progreso mini (kcal/proteína) */
+.mini-prog { margin: 6px 0; }
+.mini-track { height: 8px; background: var(--verde-claro); border-radius: 999px; overflow: hidden; }
+.mini-fill { height: 100%; width: 0; border-radius: 999px; transition: width .3s; }
+.mini-lbl { color: var(--gris); font-size: .78rem; }

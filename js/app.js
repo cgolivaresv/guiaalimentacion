@@ -4,7 +4,7 @@
    arma tu plato, lista de compras, progreso de peso, ajustes).
    ============================================================ */
 
-const APP_VERSION = "2.0.0";
+const APP_VERSION = "2.1.0";
 
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
@@ -219,9 +219,22 @@ function renderHoy() {
   $("#agua-barra-fill").style.width = pct + "%";
   $("#racha").textContent = racha;
 
+  const metaProt = Store.prefs().metaProteina;
   $("#hoy-kcal").textContent = t.kcal;
   $("#hoy-prot").textContent = t.prot;
   $("#hoy-kcal-meta").textContent = metaKcal ? ("/ " + metaKcal) : "";
+  // Barras de progreso de kcal y proteína (si hay meta)
+  const barra = (id, val, meta, color) => {
+    const wrap = $(id);
+    if (!meta) { wrap.style.display = "none"; return; }
+    wrap.style.display = "block";
+    const pct = Math.min(100, Math.round(val / meta * 100));
+    wrap.querySelector(".mini-fill").style.width = pct + "%";
+    wrap.querySelector(".mini-fill").style.background = color;
+    wrap.querySelector(".mini-lbl").textContent = `${val} / ${meta} ${wrap.dataset.unidad} (${pct}%)`;
+  };
+  barra("#barra-kcal", t.kcal, metaKcal, "var(--azul)");
+  barra("#barra-prot", t.prot, metaProt, "var(--verde)");
 
   // Selector de comida rápida
   const sel = $("#comida-select");
@@ -328,6 +341,7 @@ function abrirAjustes() {
   $("#ajustes-dislikes").innerHTML = cats.map(c => `<label class="fila-ajuste"><span>No me gusta: ${c.label}</span><input type="checkbox" data-dislike="${c.id}" ${(p.noMeGusta || []).includes(c.id) ? "checked" : ""}></label>`).join("");
   $("#input-nombre").value = p.nombre || "";
   $("#input-meta-agua").value = p.metaAgua || 8;
+  $("#input-meta-prot").value = p.metaProteina || "";
   $$("#ajustes-super .seg").forEach(b => b.classList.toggle("activo", b.dataset.super === p.super));
   $$("#ajustes-tema .seg").forEach(b => b.classList.toggle("activo", b.dataset.tema === p.tema));
   $("#rec-agua").checked = Store.recordatorios().agua;
@@ -340,8 +354,11 @@ function guardarAjustes() {
   p.noMeGusta = $$('#ajustes-dislikes input[data-dislike]:checked').map(i => i.dataset.dislike);
   p.nombre = $("#input-nombre").value.trim();
   p.metaAgua = Math.max(1, parseInt($("#input-meta-agua").value) || 8);
+  const mp = parseInt($("#input-meta-prot").value);
+  p.metaProteina = mp > 0 ? mp : null;
   Store.setPref("gustos", p.gustos); Store.setPref("noMeGusta", p.noMeGusta);
   Store.setPref("nombre", p.nombre); Store.setPref("metaAgua", p.metaAgua);
+  Store.setPref("metaProteina", p.metaProteina);
   navegar("pantalla-inicio");
 }
 
@@ -354,10 +371,14 @@ function calcularCalorias() {
   let tmb = 10 * peso + 6.25 * talla - 5 * edad + (sexo === "h" ? 5 : -161);
   const tdee = tmb * act;
   const objetivo = Math.round(tdee - 500);
+  const protObj = Math.round(peso * 1.6);
   Store.setPref("metaCalorias", objetivo);
+  Store.setPref("metaProteina", protObj);
+  const mpInput = $("#input-meta-prot"); if (mpInput) mpInput.value = protObj;
   $("#calc-resultado").innerHTML = `Metabolismo basal: <strong>${Math.round(tmb)} kcal</strong><br>
     Gasto diario estimado: <strong>${Math.round(tdee)} kcal</strong><br>
-    Para bajar ~0,5 kg/semana: <strong>${objetivo} kcal/día</strong> <small>(guardado como tu meta)</small>`;
+    Para bajar ~0,5 kg/semana: <strong>${objetivo} kcal/día</strong><br>
+    Meta de proteína: <strong>${protObj} g/día</strong> <small>(guardadas como tus metas)</small>`;
 }
 
 /* ---- Tema ---- */

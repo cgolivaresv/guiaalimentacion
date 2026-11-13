@@ -18,6 +18,7 @@ const Store = (() => {
         super: "ambos",        // "jumbo" | "lider" | "ambos"
         metaAgua: 8,           // vasos/día
         metaCalorias: null,    // kcal/día objetivo (de la calculadora)
+        metaProteina: null,    // g/día objetivo
         tema: "auto"           // "auto" | "claro" | "oscuro"
       },
       favoritos: [],           // ids de alimentos

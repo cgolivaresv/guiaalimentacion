@@ -81,6 +81,8 @@
 
       <h3 class="sub-titulo">🍽️ Comidas de hoy</h3>
       <div class="tarjeta-mini">Total: <strong id="hoy-kcal">0</strong> <span id="hoy-kcal-meta"></span> kcal · <strong id="hoy-prot">0</strong> g proteína</div>
+      <div id="barra-kcal" class="mini-prog" data-unidad="kcal" style="display:none"><div class="mini-track"><div class="mini-fill"></div></div><small class="mini-lbl"></small></div>
+      <div id="barra-prot" class="mini-prog" data-unidad="g proteína" style="display:none"><div class="mini-track"><div class="mini-fill"></div></div><small class="mini-lbl"></small></div>
       <select id="comida-select" class="input-texto" style="width:100%;margin-top:10px"></select>
       <div id="lista-comidas" class="lista"></div>
     </section>
@@ -161,6 +163,10 @@
 
       <h3 class="sub-titulo">Meta de agua (vasos/día)</h3>
       <input type="number" id="input-meta-agua" class="input-texto" min="1" max="20" value="8">
+
+      <h3 class="sub-titulo">Meta de proteína (g/día)</h3>
+      <input type="number" id="input-meta-prot" class="input-texto" min="0" max="300" placeholder="Ej: 120 (o calcúlala abajo)">
+      <p class="sub" style="font-size:.78rem">Guía: ~1,6 g por kg de peso al día ayuda a conservar músculo mientras bajas de peso.</p>
 
       <h3 class="sub-titulo">Calculadora de calorías</h3>
       <div class="calc-grid">
