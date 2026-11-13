@@ -349,3 +349,10 @@ body { height: 100dvh; overflow: hidden; }
 
 .margen-nota { background: #fff4e0; color: #8a5a00; border-radius: 12px; padding: 10px 14px; margin-top: 12px; font-size: .9rem; text-align: left; }
 html.tema-oscuro .margen-nota { background: #3a2a10; color: #ffd9a0; }
+
+/* Escáner de código de barras */
+.escaner-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 60; align-items: center; justify-content: center; padding: 20px; }
+.escaner-box { background: var(--card,#fff); border-radius: 16px; padding: 16px; width: 100%; max-width: 360px; text-align: center; }
+#escaner-region { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+#escaner-region video { width: 100% !important; border-radius: 12px; }
+.escaner-box .sub { margin: 8px 0; }

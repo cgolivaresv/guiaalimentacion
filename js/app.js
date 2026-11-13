@@ -4,7 +4,7 @@
    arma tu plato, lista de compras, progreso de peso, ajustes).
    ============================================================ */
 
-const APP_VERSION = "2.3.0";
+const APP_VERSION = "2.4.0";
 
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
@@ -218,6 +218,78 @@ function renderBuscar(q) {
   }));
 }
 
+/* ---------- Buscador EN LÍNEA (Open Food Facts + USDA) ---------- */
+let _onlineItems = [];
+function tarjetaOnline(n, idx) {
+  const sellos = (n.sellos || []).map(s => `<span class="sello">${SELLO_LABEL[s]}</span>`).join("");
+  const extras = [];
+  if (n.nutriscore) extras.push(`<span class="chip">Nutri-Score ${n.nutriscore}</span>`);
+  if (n.nova) extras.push(`<span class="chip">NOVA ${n.nova}</span>`);
+  return `<div class="buscar-item">
+    <div class="buscar-info">
+      <span class="buscar-emoji">📦</span>
+      <div>
+        <strong>${n.nombre}</strong>
+        <div class="buscar-tags">
+          ${n.kcal != null ? `<span class="chip">~${n.kcal} kcal/${n.por}</span>` : ""}
+          ${n.prot != null ? `<span class="chip">${n.prot} g prot</span>` : ""}
+          ${extras.join("")}
+        </div>
+      </div>
+    </div>
+    <button class="btn-mini" data-online="${idx}">Registrar</button>
+    ${sellos ? `<div class="sellos" style="grid-column:1/-1">${sellos}</div>` : ""}
+    <p class="buscar-nota">Fuente: ${n.fuente}</p>
+  </div>`;
+}
+function pintarOnline(items, titulo) {
+  _onlineItems = items;
+  const cont = $("#buscar-online-res");
+  if (!items.length) { cont.innerHTML = `<p class="sub">Sin resultados en línea.</p>`; return; }
+  cont.innerHTML = `<h3 class="sub-titulo">${titulo || "Resultados en línea"}</h3>` + items.map((n, i) => tarjetaOnline(n, i)).join("");
+  cont.querySelectorAll("[data-online]").forEach(b => b.addEventListener("click", () => {
+    const n = _onlineItems[+b.dataset.online]; if (!n) return;
+    Store.agregarComida({ id: "off_" + (n.codigo || Date.now()), nombre: n.nombre, kcal: n.kcal || 0, prot: n.prot || 0 });
+    toast(n.nombre + " registrado ✓");
+    navegar("pantalla-hoy");
+  }));
+}
+async function buscarEnLinea() {
+  const q = $("#buscar-input").value.trim();
+  if (!q) { toast("Escribe algo para buscar"); return; }
+  const cont = $("#buscar-online-res");
+  cont.innerHTML = `<p class="sub">Buscando en línea…</p>`;
+  try {
+    let items = await offBuscarTexto(q);
+    if (!items.length) {
+      try { items = await usdaBuscar(q, Store.prefs().usdaKey); } catch (e) {}
+    }
+    pintarOnline(items, "Open Food Facts / USDA");
+  } catch (e) {
+    cont.innerHTML = `<p class="sub">No se pudo consultar en línea. Esta función necesita conexión y funciona en el sitio publicado (GitHub Pages), no en la vista previa.</p>`;
+  }
+}
+function abrirEscaner() {
+  $("#escaner-overlay").style.display = "flex";
+  $("#escaner-estado").textContent = "Apunta al código de barras…";
+  iniciarEscaner(async (code) => {
+    cerrarEscaner();
+    navegar("pantalla-buscar");
+    $("#buscar-online-res").innerHTML = `<p class="sub">Buscando producto ${code}…</p>`;
+    try {
+      const p = await offPorCodigo(code);
+      if (p) pintarOnline([p], "Producto escaneado");
+      else $("#buscar-online-res").innerHTML = `<p class="sub">No encontré ese código en Open Food Facts. Puedes agregarlo tú en openfoodfacts.org.</p>`;
+    } catch (e) {
+      $("#buscar-online-res").innerHTML = `<p class="sub">No se pudo consultar. Prueba en el sitio publicado con conexión.</p>`;
+    }
+  }, (msg) => { $("#escaner-estado").textContent = msg; });
+}
+function cerrarEscaner() {
+  detenerEscaner();
+  $("#escaner-overlay").style.display = "none";
+}
+
 /* ---------- Despensa ---------- */
 function abrirDespensa() {
   const cont = $("#despensa-opciones");
@@ -415,6 +487,7 @@ function abrirAjustes() {
   $("#input-nombre").value = p.nombre || "";
   $("#input-meta-agua").value = p.metaAgua || 8;
   $("#input-meta-prot").value = p.metaProteina || "";
+  $("#input-usda").value = p.usdaKey || "";
   $$("#ajustes-super .seg").forEach(b => b.classList.toggle("activo", b.dataset.super === p.super));
   $$("#ajustes-tema .seg").forEach(b => b.classList.toggle("activo", b.dataset.tema === p.tema));
   $("#rec-agua").checked = Store.recordatorios().agua;
@@ -432,6 +505,7 @@ function guardarAjustes() {
   Store.setPref("gustos", p.gustos); Store.setPref("noMeGusta", p.noMeGusta);
   Store.setPref("nombre", p.nombre); Store.setPref("metaAgua", p.metaAgua);
   Store.setPref("metaProteina", p.metaProteina);
+  Store.setPref("usdaKey", $("#input-usda").value.trim());
   navegar("pantalla-inicio");
 }
 
@@ -511,6 +585,9 @@ function initEventos() {
   // Buscador
   $("#buscar-input").addEventListener("input", e => renderBuscar(e.target.value));
   $("#btn-buscar-volver").addEventListener("click", () => navegar("pantalla-inicio"));
+  $("#btn-buscar-online").addEventListener("click", buscarEnLinea);
+  $("#btn-escanear").addEventListener("click", abrirEscaner);
+  $("#btn-escaner-cerrar").addEventListener("click", cerrarEscaner);
   $$("#buscar-filtros .seg").forEach(b => b.addEventListener("click", () => {
     estado.filtroBuscar = b.dataset.filtro === "todo" ? null : b.dataset.filtro;
     $$("#buscar-filtros .seg").forEach(x => x.classList.toggle("activo", x === b));

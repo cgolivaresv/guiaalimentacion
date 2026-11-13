@@ -19,7 +19,8 @@ const Store = (() => {
         metaAgua: 8,           // vasos/día
         metaCalorias: null,    // kcal/día objetivo (de la calculadora)
         metaProteina: null,    // g/día objetivo
-        tema: "auto"           // "auto" | "claro" | "oscuro"
+        tema: "auto",          // "auto" | "claro" | "oscuro"
+        usdaKey: ""            // API key opcional de USDA FoodData Central
       },
       favoritos: [],           // ids de alimentos
       registros: {},           // { "2026-11-12": { agua: 3, comidas: [ {id,nombre,kcal,prot,hora} ] } }

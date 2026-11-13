@@ -1,10 +1,12 @@
 /* Service worker simple: cachea la app para uso offline */
-const CACHE = "guiaalim-v2.3.0";
+const CACHE = "guiaalim-v2.4.0";
 const ASSETS = [
   "./",
   "./index.html",
   "./css/styles.css",
   "./js/data.js",
+  "./js/store.js",
+  "./js/nutri-online.js",
   "./js/store.js",
   "./js/app.js",
   "./manifest.webmanifest",

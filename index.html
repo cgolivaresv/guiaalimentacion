@@ -146,9 +146,23 @@
         <button class="seg" data-filtro="hambre">Comida</button>
         <button class="seg" data-filtro="sed">Bebida</button>
       </div>
+      <div class="acciones-fila" style="margin-top:10px">
+        <button id="btn-buscar-online" class="btn-secundario" style="flex:1">🌐 Buscar en línea</button>
+        <button id="btn-escanear" class="btn-secundario" style="flex:1">📷 Escanear código</button>
+      </div>
       <div id="buscar-resultados" class="lista"></div>
+      <div id="buscar-online-res" class="lista"></div>
       <div class="acciones"><button id="btn-buscar-volver" class="btn-texto">Volver</button></div>
     </section>
+
+    <!-- OVERLAY ESCÁNER -->
+    <div id="escaner-overlay" class="escaner-overlay">
+      <div class="escaner-box">
+        <div id="escaner-region"></div>
+        <p id="escaner-estado" class="sub"></p>
+        <button id="btn-escaner-cerrar" class="btn-primario">Cerrar</button>
+      </div>
+    </div>
 
     <!-- PORCIONES -->
     <section id="pantalla-porcion" class="pantalla">
@@ -201,6 +215,10 @@
       </div>
       <p id="calc-resultado" class="porque" style="margin-top:10px"></p>
 
+      <h3 class="sub-titulo">Nutrición en línea (opcional)</h3>
+      <input type="text" id="input-usda" class="input-texto" style="width:100%" placeholder="API key de USDA (opcional)">
+      <p class="sub" style="font-size:.78rem">Open Food Facts no necesita clave. Para USDA puedes pedir una gratis en fdc.nal.usda.gov; si la dejas vacía se usa una clave de demostración con límite.</p>
+
       <h3 class="sub-titulo">Recordatorios</h3>
       <label class="fila-ajuste"><span>💧 Recordarme tomar agua</span><input type="checkbox" id="rec-agua"></label>
       <label class="fila-ajuste"><span>🍽️ Recordarme registrar comidas</span><input type="checkbox" id="rec-comidas"></label>
@@ -240,8 +258,10 @@
     <p>Orientación general · no reemplaza a tu médico ni nutricionista · <span id="app-version"></span></p>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
   <script src="./js/data.js"></script>
   <script src="./js/store.js"></script>
+  <script src="./js/nutri-online.js"></script>
   <script src="./js/app.js"></script>
 </body>
 </html>
